@@ -8,7 +8,7 @@
     "surface_m2": 234,
     "rooms": 5,
     "listing_type": "Woning",
-    "thumbnail_url": null,
+    "thumbnail_url": "https://cloud.funda.nl/valentina_media/230/107/803.jpg",
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/appartement-hoola-van-nootenstraat-278/44488721/",
     "region": "utrecht",
     "search_type": "koop"
@@ -22,7 +22,7 @@
     "surface_m2": 672,
     "rooms": 15,
     "listing_type": "Woning",
-    "thumbnail_url": null,
+    "thumbnail_url": "https://cloud.funda.nl/valentina_media/228/240/230.jpg",
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/huis-nieuwegracht-67/43332541/",
     "region": "utrecht",
     "search_type": "koop"
@@ -36,7 +36,7 @@
     "surface_m2": 372,
     "rooms": 7,
     "listing_type": "Woning",
-    "thumbnail_url": null,
+    "thumbnail_url": "https://cloud.funda.nl/valentina_media/199/363/668.jpg",
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/appartement-nieuwegracht-19-g/43774096/",
     "region": "utrecht",
     "search_type": "koop"
