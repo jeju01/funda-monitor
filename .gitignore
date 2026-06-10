@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+*.log
+# docs/index.html wordt wél gecommit (GitHub Pages)
