@@ -21,9 +21,27 @@ SEARCH_URL = (
 MAX_PAGES = 5
 
 
-def _parse_price(text: str) -> Optional[int]:
-    digits = re.sub(r"[^\d]", "", text)
-    return int(digits) if digits else None
+def _parse_price(text: str) -> tuple[Optional[int], str]:
+    """
+    Geeft (getal, weergave_tekst) terug.
+    Bij complexe prijzen zoals "€ 95.000 + € 1.275/maand" wordt het getal
+    op None gezet en de originele tekst bewaard voor weergave.
+    """
+    cleaned = text.strip()
+
+    # Detecteer complexe prijsstrings — sla als tekst op, niet als getal
+    if any(w in cleaned.lower() for w in ["/maand", "/month", "maand", "+ €", "+€", "erfpacht", "p/m"]):
+        return None, cleaned
+
+    # Meerdere losstaande grote getallen? Dan ook niet parsen
+    numbers = re.findall(r"\d[\d.]+\d", cleaned)
+    if len(numbers) > 1:
+        return None, cleaned
+
+    digits = re.sub(r"[^\d]", "", cleaned)
+    if not digits:
+        return None, cleaned
+    return int(digits), cleaned
 
 
 def _extract_id(url: str) -> Optional[str]:
@@ -44,23 +62,45 @@ def _extract_card(card) -> Optional[dict]:
         if not listing_id:
             return None
 
-        # Prijs
-        price_el = card.locator("[class*=price__primary]").first
-        price_text = price_el.inner_text() if price_el.count() else ""
-        price_int = _parse_price(price_text)
+        # Prijs — gebruik sr-only span met machine-leesbaar getal (bijv. "2990000€")
+        price_int = None
+        price_display = None
+        sr_el = card.locator(".sr-only").all()
+        for el in sr_el:
+            txt = el.inner_text().strip()
+            if re.search(r"\d{6,}", txt):
+                price_int, price_display = _parse_price(txt)
+                if price_int:
+                    break
+        # Fallback: zichtbare prijstekst (inclusief complexe formaten)
+        if not price_int:
+            price_el = card.locator("[class*=card--result__price]").first
+            if price_el.count():
+                visible_text = price_el.inner_text().strip()
+                price_int, price_display = _parse_price(visible_text)
+                if not price_display:
+                    price_display = visible_text
         if price_int and price_int < MIN_PRICE:
             return None
 
-        # Titel / type
-        title_el = card.locator("p.card__sub-title, h2.card__title").first
-        title = title_el.inner_text().strip() if title_el.count() else "Vastgoed"
-
         # Stad / postcode — formaat: "8300 Knokke-Heist"
-        locality_el = card.locator("[class*=locality]").first
+        locality_el = card.locator("[class*=information--locality]").first
         locality_text = locality_el.inner_text().strip() if locality_el.count() else ""
         postcode_match = re.match(r"(\d{4})\s+(.*)", locality_text)
         postcode = postcode_match.group(1) if postcode_match else ""
         city = postcode_match.group(2) if postcode_match else locality_text
+
+        # Titel: gebruik aria-label van de link voor type + stad
+        # bijv. "House te koop, Uccle (2.990.000 €)" → "Huis – Uccle"
+        link_el = card.locator("a.card__title-link").first
+        aria = link_el.get_attribute("aria-label") if link_el.count() else ""
+        if aria:
+            # Extraheer type-deel vóór " te koop"
+            type_part = re.split(r"\s+te\s+koop", aria, flags=re.I)[0].strip()
+            title = f"{type_part} – {city}" if city else type_part
+        else:
+            title_el = card.locator("h2.card__title").first
+            title = title_el.inner_text().strip() if title_el.count() else "Vastgoed"
 
         # Oppervlakte en slaapkamers
         surface_m2 = None
@@ -79,10 +119,12 @@ def _extract_card(card) -> Optional[dict]:
         img_el = card.locator("img.card__media-picture").first
         thumbnail_url = img_el.get_attribute("src") if img_el.count() else None
 
-        def fmt_price(amount):
-            if not amount:
-                return "Prijs onbekend"
-            return "€ " + f"{amount:,.0f}".replace(",", ".")
+        def fmt_price(amount, display):
+            if amount:
+                return "€ " + f"{amount:,.0f}".replace(",", ".")
+            if display:
+                return display  # bijv. "€ 95.000 + € 1.275/maand"
+            return "Prijs onbekend"
 
         return {
             "id": f"immo_{listing_id}",
@@ -92,7 +134,7 @@ def _extract_card(card) -> Optional[dict]:
             "country": "BE",
             "source": "Immoweb",
             "price": price_int,
-            "price_formatted": fmt_price(price_int),
+            "price_formatted": fmt_price(price_int, price_display),
             "surface_m2": surface_m2,
             "rooms": rooms,
             "listing_type": "Woning",

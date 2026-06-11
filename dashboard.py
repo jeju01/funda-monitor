@@ -132,23 +132,31 @@ def build_dashboard(listings: list[dict]) -> str:
     .filter-group input:focus{{border-color:#b5a48a}}
 
     /* ── Dual range slider ── */
-    .slider-block{{background:#fff;border:1.5px solid #d4ccc2;border-radius:10px;padding:16px 18px 14px;flex:2 1 280px}}
-    .slider-block label{{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#7a6e62;display:block;margin-bottom:10px}}
-    .price-display{{display:flex;justify-content:space-between;margin-bottom:10px}}
-    .price-display span{{font-size:13px;font-weight:700;color:#2c2c2c;background:#f0ece6;padding:4px 10px;border-radius:5px}}
-    .range-wrap{{position:relative;height:28px}}
+    .slider-block{{background:#fff;border:1.5px solid #d4ccc2;border-radius:10px;padding:14px 16px 12px;flex:0 1 380px;min-width:260px}}
+    .slider-block > label{{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#7a6e62;display:block;margin-bottom:10px}}
+    .price-inputs-row{{display:flex;gap:8px;margin-bottom:10px;align-items:center}}
+    .price-inputs-row input[type=number]{{
+      flex:1;padding:7px 10px;border:1.5px solid #d4ccc2;border-radius:7px;
+      font-size:13px;font-weight:600;background:#f9f7f4;outline:none;
+      transition:border-color .2s;-moz-appearance:textfield;min-width:0
+    }}
+    .price-inputs-row input[type=number]::-webkit-outer-spin-button,
+    .price-inputs-row input[type=number]::-webkit-inner-spin-button{{-webkit-appearance:none}}
+    .price-inputs-row input[type=number]:focus{{border-color:#b5a48a;background:#fff}}
+    .price-inputs-row span{{font-size:12px;color:#aaa;flex-shrink:0}}
+    .range-wrap{{position:relative;height:24px;margin-top:2px}}
     .range-wrap input[type=range]{{
       position:absolute;width:100%;height:4px;top:50%;transform:translateY(-50%);
       -webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;outline:none
     }}
     .range-wrap input[type=range]::-webkit-slider-thumb{{
       -webkit-appearance:none;appearance:none;
-      width:20px;height:20px;border-radius:50%;
+      width:18px;height:18px;border-radius:50%;
       background:#b5a48a;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);
       pointer-events:all;cursor:pointer;
     }}
     .range-wrap input[type=range]::-moz-range-thumb{{
-      width:20px;height:20px;border-radius:50%;
+      width:18px;height:18px;border-radius:50%;
       background:#b5a48a;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);
       pointer-events:all;cursor:pointer;border:none
     }}
@@ -243,11 +251,12 @@ def build_dashboard(listings: list[dict]) -> str:
   <div class="filter-row">
     <div class="slider-block">
       <label>Prijsrange</label>
-      <div class="price-display">
-        <span id="label-min">{js_price(0)}</span>
-        <span id="label-max">{js_price(slider_max)}</span>
+      <div class="price-inputs-row">
+        <input type="number" id="input-min" value="{slider_min}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Min">
+        <span>—</span>
+        <input type="number" id="input-max" value="{slider_max}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Max">
       </div>
-      <div class="range-wrap" id="range-wrap">
+      <div class="range-wrap">
         <div class="range-track"><div class="range-fill" id="range-fill"></div></div>
         <input type="range" id="slider-min" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_min}">
         <input type="range" id="slider-max" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_max}">
@@ -313,8 +322,8 @@ def build_dashboard(listings: list[dict]) -> str:
   const cntryEl   = document.getElementById('filter-country');
   const sMin      = document.getElementById('slider-min');
   const sMax      = document.getElementById('slider-max');
-  const labelMin  = document.getElementById('label-min');
-  const labelMax  = document.getElementById('label-max');
+  const inputMin  = document.getElementById('input-min');
+  const inputMax  = document.getElementById('input-max');
   const fill      = document.getElementById('range-fill');
   const radToggle = document.getElementById('radius-toggle');
   const radSection= document.getElementById('radius-section');
@@ -332,13 +341,28 @@ def build_dashboard(listings: list[dict]) -> str:
     return '€ ' + Math.round(v).toLocaleString('nl-NL');
   }}
 
-  // ── Slider bijwerken ──
+  // ── Slider + invoervelden synchroon houden ──
   function updateSlider() {{
     let lo = parseInt(sMin.value);
     let hi = parseInt(sMax.value);
     if (lo > hi) {{ [lo, hi] = [hi, lo]; sMin.value = lo; sMax.value = hi; }}
-    labelMin.textContent = fmtPrice(lo);
-    labelMax.textContent = fmtPrice(hi);
+    inputMin.value = lo;
+    inputMax.value = hi;
+    const pct1 = (lo - SLIDER_MIN_VAL) / (SLIDER_MAX_VAL - SLIDER_MIN_VAL) * 100;
+    const pct2 = (hi - SLIDER_MIN_VAL) / (SLIDER_MAX_VAL - SLIDER_MIN_VAL) * 100;
+    fill.style.left  = pct1 + '%';
+    fill.style.width = (pct2 - pct1) + '%';
+    applyFilters();
+  }}
+
+  function updateFromInput() {{
+    let lo = parseInt(inputMin.value) || SLIDER_MIN_VAL;
+    let hi = parseInt(inputMax.value) || SLIDER_MAX_VAL;
+    lo = Math.max(SLIDER_MIN_VAL, Math.min(lo, SLIDER_MAX_VAL));
+    hi = Math.max(SLIDER_MIN_VAL, Math.min(hi, SLIDER_MAX_VAL));
+    if (lo > hi) lo = hi;
+    sMin.value = lo;
+    sMax.value = hi;
     const pct1 = (lo - SLIDER_MIN_VAL) / (SLIDER_MAX_VAL - SLIDER_MIN_VAL) * 100;
     const pct2 = (hi - SLIDER_MIN_VAL) / (SLIDER_MAX_VAL - SLIDER_MIN_VAL) * 100;
     fill.style.left  = pct1 + '%';
@@ -348,6 +372,10 @@ def build_dashboard(listings: list[dict]) -> str:
 
   sMin.addEventListener('input', updateSlider);
   sMax.addEventListener('input', updateSlider);
+  inputMin.addEventListener('input', updateFromInput);
+  inputMax.addEventListener('input', updateFromInput);
+  inputMin.addEventListener('change', updateFromInput);
+  inputMax.addEventListener('change', updateFromInput);
 
   // ── Overige filters — direct, zonder knop ──
   searchEl.addEventListener('input', applyFilters);
@@ -394,8 +422,8 @@ def build_dashboard(listings: list[dict]) -> str:
     const q      = searchEl.value.toLowerCase().trim();
     const src    = srcEl.value;
     const cntry  = cntryEl.value;
-    const pLo    = parseInt(sMin.value);
-    const pHi    = parseInt(sMax.value);
+    const pLo    = parseInt(sMin.value) || SLIDER_MIN_VAL;
+    const pHi    = parseInt(sMax.value) || SLIDER_MAX_VAL;
     const useRad = radToggle.checked && centerLat !== null;
     const radKm  = parseFloat(radiusEl.value) || 999;
 
@@ -463,6 +491,7 @@ def build_dashboard(listings: list[dict]) -> str:
   clearBtn.addEventListener('click', () => {{
     searchEl.value=''; srcEl.value=''; cntryEl.value=''; sortEl.value='default';
     sMin.value=SLIDER_MIN_VAL; sMax.value=SLIDER_MAX_VAL;
+    inputMin.value=SLIDER_MIN_VAL; inputMax.value=SLIDER_MAX_VAL;
     radToggle.checked=false; radSection.classList.remove('open');
     centerLat=null; centerLon=null; radStatus.textContent='';
     updateSlider();
