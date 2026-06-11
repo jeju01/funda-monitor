@@ -11700,10 +11700,22 @@
 
   function initMap() {
     if (map) return;
-    map = L.map('map').setView([51.5, 5.0], 7);
+    map = L.map('map', { scrollWheelZoom: false }).setView([51.5, 5.0], 7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap', maxZoom: 18
     }).addTo(map);
+
+    // Twee vingers scrollen → pan; knijpen (ctrlKey) → zoom
+    map.getContainer().addEventListener('wheel', e => {
+      e.preventDefault();
+      if (e.ctrlKey) {
+        // Knijpen: zoom in/uit
+        map.setZoom(map.getZoom() + (e.deltaY < 0 ? 0.5 : -0.5));
+      } else {
+        // Scrollen: verschuif de kaart
+        map.panBy([e.deltaX * 1.5, e.deltaY * 1.5], {animate: false});
+      }
+    }, {passive: false});
 
     // Markers per listing
     const srcColors = { Funda: '#ff6b00', Immoweb: '#003da5' };
