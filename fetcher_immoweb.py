@@ -1,0 +1,183 @@
+"""
+Haalt Belgische listings op van immoweb.be via Playwright (headless Chrome).
+Immoweb gebruikt client-side rendering, dus een echte browser is vereist.
+"""
+
+import logging
+import re
+from typing import Optional
+
+from config import MIN_PRICE
+from geocoder import geocode_listing
+
+logger = logging.getLogger(__name__)
+
+IMMOWEB_BASE = "https://www.immoweb.be"
+SEARCH_URL = (
+    f"{IMMOWEB_BASE}/nl/zoeken/huis,appartement,villa,te-koop-of-te-huur/te-koop"
+    f"?countries=BE&minPrice={{min_price}}&orderBy=newest&page={{page}}"
+)
+
+MAX_PAGES = 5
+
+
+def _parse_price(text: str) -> Optional[int]:
+    digits = re.sub(r"[^\d]", "", text)
+    return int(digits) if digits else None
+
+
+def _extract_id(url: str) -> Optional[str]:
+    m = re.search(r"/(\d{6,12})(?:\?|$)", url)
+    return m.group(1) if m else url.strip("/").split("/")[-1]
+
+
+def _extract_card(card) -> Optional[dict]:
+    """Extraheer data uit één Playwright card-element."""
+    try:
+        url_el = card.locator("a.card__title-link").first
+        url = url_el.get_attribute("href") if url_el.count() else ""
+        if not url:
+            return None
+        full_url = url if url.startswith("http") else f"{IMMOWEB_BASE}{url}"
+
+        listing_id = _extract_id(full_url)
+        if not listing_id:
+            return None
+
+        # Prijs
+        price_el = card.locator("[class*=price__primary]").first
+        price_text = price_el.inner_text() if price_el.count() else ""
+        price_int = _parse_price(price_text)
+        if price_int and price_int < MIN_PRICE:
+            return None
+
+        # Titel / type
+        title_el = card.locator("p.card__sub-title, h2.card__title").first
+        title = title_el.inner_text().strip() if title_el.count() else "Vastgoed"
+
+        # Stad / postcode — formaat: "8300 Knokke-Heist"
+        locality_el = card.locator("[class*=locality]").first
+        locality_text = locality_el.inner_text().strip() if locality_el.count() else ""
+        postcode_match = re.match(r"(\d{4})\s+(.*)", locality_text)
+        postcode = postcode_match.group(1) if postcode_match else ""
+        city = postcode_match.group(2) if postcode_match else locality_text
+
+        # Oppervlakte en slaapkamers
+        surface_m2 = None
+        rooms = None
+        specs_els = card.locator("[class*=property__item]").all()
+        for spec in specs_els:
+            text = spec.inner_text().strip()
+            m2 = re.search(r"(\d+)\s*m²", text)
+            slp = re.search(r"(\d+)\s*(?:slp|slaapkamer)", text, re.I)
+            if m2:
+                surface_m2 = int(m2.group(1))
+            if slp:
+                rooms = int(slp.group(1))
+
+        # Foto
+        img_el = card.locator("img.card__media-picture").first
+        thumbnail_url = img_el.get_attribute("src") if img_el.count() else None
+
+        def fmt_price(amount):
+            if not amount:
+                return "Prijs onbekend"
+            return "€ " + f"{amount:,.0f}".replace(",", ".")
+
+        return {
+            "id": f"immo_{listing_id}",
+            "address": title,
+            "city": city,
+            "postcode": postcode,
+            "country": "BE",
+            "source": "Immoweb",
+            "price": price_int,
+            "price_formatted": fmt_price(price_int),
+            "surface_m2": surface_m2,
+            "rooms": rooms,
+            "listing_type": "Woning",
+            "thumbnail_url": thumbnail_url,
+            "funda_url": full_url,
+            "region": "België",
+            "search_type": "koop",
+            "lat": None,
+            "lon": None,
+        }
+    except Exception as exc:
+        logger.debug(f"Card parse fout: {exc}")
+        return None
+
+
+def fetch_immoweb_listings(min_price: int = MIN_PRICE) -> list[dict]:
+    """
+    Haalt listings op van immoweb.be via Playwright.
+    Geeft een lijst van listing-dicts terug.
+    """
+    try:
+        from playwright.sync_api import sync_playwright  # noqa
+    except ImportError:
+        logger.error("Playwright niet geïnstalleerd. Voer uit: pip3 install playwright && playwright install chromium")
+        return []
+
+    results: list[dict] = []
+
+    try:
+        from playwright.sync_api import sync_playwright
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(
+                headless=True,
+                args=["--disable-blink-features=AutomationControlled"],
+            )
+            ctx = browser.new_context(
+                user_agent=(
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/124.0.0.0 Safari/537.36"
+                ),
+                locale="nl-BE",
+                viewport={"width": 1280, "height": 800},
+            )
+            page = ctx.new_page()
+            page.add_init_script(
+                "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+            )
+
+            for page_num in range(1, MAX_PAGES + 1):
+                url = SEARCH_URL.format(min_price=min_price, page=page_num)
+                logger.info(f"Immoweb: pagina {page_num} laden…")
+
+                try:
+                    page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                    page.wait_for_timeout(4000)
+                except Exception as exc:
+                    logger.error(f"Immoweb pagina {page_num} timeout: {exc}")
+                    break
+
+                cards = page.locator("article.card--result").all()
+                logger.info(f"  → {len(cards)} cards op pagina {page_num}")
+
+                if not cards:
+                    break
+
+                page_results = []
+                for card in cards:
+                    listing = _extract_card(card)
+                    if listing:
+                        geocode_listing(listing)
+                        page_results.append(listing)
+
+                results.extend(page_results)
+                logger.info(f"  → {len(page_results)} bruikbare listings op pagina {page_num}")
+
+                # Stop als er minder dan 20 cards zijn (laatste pagina)
+                if len(cards) < 20:
+                    break
+
+            browser.close()
+
+    except Exception as exc:
+        logger.error(f"Immoweb scraper fout: {exc}")
+
+    logger.info(f"Immoweb totaal: {len(results)} listings")
+    return results

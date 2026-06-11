@@ -26,6 +26,7 @@ import logging
 from typing import Optional
 
 from config import MIN_PRICE, PAGES_PER_QUERY, REGIONS
+from geocoder import geocode_listing
 
 logger = logging.getLogger(__name__)
 
@@ -55,17 +56,31 @@ def _listing_to_dict(listing, region: str) -> Optional[dict]:
 
     rooms: Optional[int] = listing.rooms_count  # rooms.total
 
-    # First available photo
+    # Foto-URL: zoekresultaten bevatten geen volledige URLs, maar wel foto-IDs.
+    # Patroon: ID 230107803 → cloud.funda.nl/valentina_media/230/107/803.jpg
     thumbnail_url: Optional[str] = None
-    if listing.media and listing.media.photo_urls:
-        thumbnail_url = listing.media.photo_urls[0]
+    raw_source = listing.raw.get("_source", {}) if listing.raw else {}
+    thumb_ids = raw_source.get("thumbnail_id")
+    if thumb_ids:
+        first_id = thumb_ids[0] if isinstance(thumb_ids, list) else thumb_ids
+        id_str = str(first_id).zfill(9)
+        thumbnail_url = (
+            f"https://cloud.funda.nl/valentina_media/"
+            f"{id_str[0:3]}/{id_str[3:6]}/{id_str[6:9]}.jpg"
+        )
 
     funda_url = listing.url or f"https://www.funda.nl/koop/{listing_id}/"
+
+    # Postcode voor geocoding
+    postcode = raw_source.get("address", {}).get("postal_code", "") or ""
 
     return {
         "id": str(listing_id),
         "address": address_title,
         "city": city,
+        "postcode": postcode,
+        "country": "NL",
+        "source": "Funda",
         "price": price_amount,
         "price_formatted": _format_price(price_amount),
         "surface_m2": surface_m2,
@@ -75,6 +90,8 @@ def _listing_to_dict(listing, region: str) -> Optional[dict]:
         "funda_url": funda_url,
         "region": region,
         "search_type": "koop",
+        "lat": None,
+        "lon": None,
     }
 
 
@@ -99,6 +116,7 @@ def _fetch_region(region: str, min_price: int) -> list[dict]:
             ):
                 normalized = _listing_to_dict(raw_listing, region)
                 if normalized:
+                    geocode_listing(normalized)
                     results.append(normalized)
     except Exception as exc:
         logger.error(f"Failed to fetch region '{region}': {exc}")

@@ -21,6 +21,7 @@ from config import MIN_PRICE, REGIONS
 from dashboard import save_dashboard
 from diff import find_new_listings
 from fetcher import fetch_all_listings
+from fetcher_immoweb import fetch_immoweb_listings
 from publisher import publish_dashboard
 from snapshot import load_snapshot, save_snapshot
 
@@ -43,8 +44,11 @@ def run_weekly_report() -> None:
     # 1. Laad vorige snapshot
     last_snapshot = load_snapshot()
 
-    # 2. Haal alle huidige listings op
-    current_listings = fetch_all_listings(regions=REGIONS, min_price=MIN_PRICE)
+    # 2. Haal alle huidige listings op (Funda NL + Immoweb BE)
+    funda_listings = fetch_all_listings(regions=REGIONS, min_price=MIN_PRICE)
+    immoweb_listings = fetch_immoweb_listings(min_price=MIN_PRICE)
+    current_listings = funda_listings + immoweb_listings
+    logger.info(f"Totaal: {len(funda_listings)} Funda + {len(immoweb_listings)} Immoweb = {len(current_listings)} listings")
 
     # 3. Bepaal nieuwe listings
     new_listings = find_new_listings(current_listings, last_snapshot)
