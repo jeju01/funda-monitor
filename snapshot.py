@@ -1,6 +1,9 @@
 """
-Manages the weekly snapshot: a JSON file mapping listing_id → listing dict.
-On each run the snapshot is fully overwritten with the current result set.
+Beheert de snapshot: een JSON-bestand met listing_id → listing dict.
+
+Samenvoegstrategie: nieuwe listings worden toegevoegd/bijgewerkt,
+bestaande listings blijven bewaard. Listings verdwijnen nooit automatisch
+uit de snapshot — zo gaan eerder opgehaalde panden niet verloren.
 """
 
 import json
@@ -13,26 +16,30 @@ logger = logging.getLogger(__name__)
 
 
 def load_snapshot(path: Path = SNAPSHOT_FILE) -> dict[str, dict]:
-    """Load the snapshot from disk. Returns an empty dict if the file doesn't exist."""
     if not path.exists():
-        logger.info("No existing snapshot found — treating all fetched listings as new.")
+        logger.info("Geen bestaande snapshot — alle listings worden als nieuw behandeld.")
         return {}
     try:
         with open(path, "r", encoding="utf-8") as fh:
             data = json.load(fh)
-        logger.info(f"Loaded snapshot with {len(data)} listings from {path}")
+        logger.info(f"Snapshot geladen: {len(data)} listings uit {path}")
         return data
     except (json.JSONDecodeError, OSError) as exc:
-        logger.error(f"Failed to read snapshot ({exc}) — starting fresh.")
+        logger.error(f"Snapshot lezen mislukt ({exc}) — verse start.")
         return {}
 
 
-def save_snapshot(listings: list[dict], path: Path = SNAPSHOT_FILE) -> None:
-    """Overwrite the snapshot with the current full listing set."""
-    snapshot: dict[str, dict] = {listing["id"]: listing for listing in listings}
+def save_snapshot(new_listings: list[dict], path: Path = SNAPSHOT_FILE) -> None:
+    """
+    Voeg nieuwe listings samen met de bestaande snapshot.
+    Bestaande listings worden bijgewerkt (prijs, foto etc. kunnen veranderen),
+    maar worden nooit verwijderd. Zo gaan listings van vorige runs niet verloren.
+    """
+    existing = load_snapshot(path)
+    existing.update({l["id"]: l for l in new_listings})
     try:
         with open(path, "w", encoding="utf-8") as fh:
-            json.dump(snapshot, fh, ensure_ascii=False, indent=2)
-        logger.info(f"Snapshot saved: {len(snapshot)} listings → {path}")
+            json.dump(existing, fh, ensure_ascii=False, indent=2)
+        logger.info(f"Snapshot opgeslagen: {len(existing)} listings totaal ({len(new_listings)} nieuw/bijgewerkt) → {path}")
     except OSError as exc:
-        logger.error(f"Failed to save snapshot: {exc}")
+        logger.error(f"Snapshot opslaan mislukt: {exc}")
