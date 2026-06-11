@@ -12,12 +12,14 @@
 
     /* ── Hero header ── */
     .hero{
-      background:linear-gradient(135deg,#1a1a1a 0%,#2e2620 60%,#3a2e25 100%);
+      background:
+        linear-gradient(135deg,rgba(20,16,12,.72) 0%,rgba(38,28,20,.78) 100%),
+        url("Kantoor afbeelding.png") center 35% / cover no-repeat;
       padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden
     }
     .hero::before{
       content:'';position:absolute;inset:0;
-      background:radial-gradient(ellipse at 70% 50%,rgba(181,164,138,.15) 0%,transparent 65%);
+      background:radial-gradient(ellipse at 60% 40%,rgba(181,164,138,.12) 0%,transparent 60%);
       pointer-events:none
     }
     .hero-eyebrow{
