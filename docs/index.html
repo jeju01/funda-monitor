@@ -8,25 +8,51 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f0ece6;color:#2c2c2c;min-height:100vh}
 
-    /* Header */
     header{background:#1a1a1a;padding:28px 24px 20px;text-align:center}
     header h1{color:#fff;font-size:clamp(18px,4vw,26px);font-weight:700}
     header p{color:#a09080;font-size:12px;margin-top:5px;text-transform:uppercase;letter-spacing:1px}
     .accent-bar{background:#b5a48a;padding:9px 24px;text-align:center;font-size:11px;color:#fff;text-transform:uppercase;letter-spacing:.8px}
 
-    /* Filters panel */
-    .filters{max-width:1200px;margin:24px auto 0;padding:0 16px;display:flex;flex-direction:column;gap:14px}
+    /* ── Filters ── */
+    .filters{max-width:1200px;margin:24px auto 0;padding:0 16px;display:flex;flex-direction:column;gap:16px}
     .filter-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
-    .filter-group{display:flex;flex-direction:column;gap:5px;flex:1 1 180px}
+    .filter-group{display:flex;flex-direction:column;gap:5px;flex:1 1 160px}
     .filter-group label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#7a6e62}
+    .filter-group select,
     .filter-group input[type=text],
-    .filter-group input[type=number],
-    .filter-group select{padding:9px 12px;border:1.5px solid #d4ccc2;border-radius:8px;font-size:13px;background:#fff;outline:none;transition:border-color .2s;width:100%}
-    .filter-group input:focus,.filter-group select:focus{border-color:#b5a48a}
-    .filter-group.radius-group{flex:0 0 130px}
+    .filter-group input[type=number]{
+      padding:9px 12px;border:1.5px solid #d4ccc2;border-radius:8px;
+      font-size:13px;background:#fff;outline:none;transition:border-color .2s;width:100%
+    }
+    .filter-group select:focus,
+    .filter-group input:focus{border-color:#b5a48a}
 
-    /* Radius toggle */
-    .radius-toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:#2c2c2c;cursor:pointer;user-select:none}
+    /* ── Dual range slider ── */
+    .slider-block{background:#fff;border:1.5px solid #d4ccc2;border-radius:10px;padding:16px 18px 14px;flex:2 1 280px}
+    .slider-block label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#7a6e62;display:block;margin-bottom:10px}
+    .price-display{display:flex;justify-content:space-between;margin-bottom:10px}
+    .price-display span{font-size:13px;font-weight:700;color:#2c2c2c;background:#f0ece6;padding:4px 10px;border-radius:5px}
+    .range-wrap{position:relative;height:28px}
+    .range-wrap input[type=range]{
+      position:absolute;width:100%;height:4px;top:50%;transform:translateY(-50%);
+      -webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;outline:none
+    }
+    .range-wrap input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;appearance:none;
+      width:20px;height:20px;border-radius:50%;
+      background:#b5a48a;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);
+      pointer-events:all;cursor:pointer;
+    }
+    .range-wrap input[type=range]::-moz-range-thumb{
+      width:20px;height:20px;border-radius:50%;
+      background:#b5a48a;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);
+      pointer-events:all;cursor:pointer;border:none
+    }
+    .range-track{position:absolute;top:50%;transform:translateY(-50%);width:100%;height:4px;border-radius:2px;background:#d4ccc2;pointer-events:none}
+    .range-fill{position:absolute;top:0;height:100%;border-radius:2px;background:#b5a48a}
+
+    /* ── Radius ── */
+    .radius-toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;user-select:none;text-transform:none;letter-spacing:0;font-weight:400;color:#2c2c2c}
     .radius-toggle input{accent-color:#b5a48a;width:16px;height:16px;cursor:pointer}
     .radius-section{background:#fff;border:1.5px solid #d4ccc2;border-radius:10px;padding:14px 16px;display:none;flex-direction:column;gap:12px}
     .radius-section.open{display:flex}
@@ -37,19 +63,14 @@
     .btn-clear{padding:10px 16px;background:transparent;color:#888;border:1.5px solid #ccc;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
     .btn-clear:hover{background:#eee;color:#333}
 
-    /* Price range */
-    .price-inputs{display:flex;gap:8px;align-items:center}
-    .price-inputs input{width:130px}
-    .price-inputs span{color:#aaa;font-size:13px}
-
-    /* Stats */
+    /* ── Stats ── */
     .stats{max-width:1200px;margin:14px auto 0;padding:0 16px;font-size:13px;color:#7a6e62}
     .stats strong{color:#2c2c2c}
 
-    /* Grid */
+    /* ── Grid ── */
     .grid{max-width:1200px;margin:18px auto 48px;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 
-    /* Card */
+    /* ── Card ── */
     .card{background:#e8e0d5;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
     .card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
     .card.hidden{display:none}
@@ -72,10 +93,9 @@
     .badge{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600}
     .badge-woning{background:#d4e8d4;color:#2d5a2d}
     .badge-commercial{background:#d4dce8;color:#2d3d5a}
-    .card-distance{font-size:11px;color:#b5a48a;font-weight:600;min-height:16px}
+    .card-distance{font-size:11px;color:#b5a48a;font-weight:600;min-height:14px}
     .btn-funda{display:block;margin-top:10px;padding:9px 16px;background:#b5a48a;color:#fff;text-decoration:none;font-size:13px;font-weight:600;border-radius:6px;transition:background .2s;text-align:center}
     .btn-funda:hover{background:#9d8e77}
-
     .empty,.no-results{grid-column:1/-1;text-align:center;padding:60px 20px;color:#7a6e62;font-size:16px}
     footer{background:#1a1a1a;color:#666;text-align:center;padding:18px;font-size:11px}
   </style>
@@ -86,15 +106,15 @@
   <h1>Vastgoedmonitor</h1>
   <p>Lammers Beton &nbsp;·&nbsp; Bijgewerkt op 11-06-2026</p>
 </header>
-<div class="accent-bar">Boven €2.500.000 &nbsp;·&nbsp; Noord-Brabant · Limburg · Zuid-Holland · Utrecht · Gelderland</div>
+<div class="accent-bar">Nederland &amp; België &nbsp;·&nbsp; Funda + Immoweb</div>
 
 <div class="filters">
 
-  <!-- Rij 1: zoeken + bron + land + sortering -->
+  <!-- Rij 1: zoekbalk + bron + land + sortering -->
   <div class="filter-row">
     <div class="filter-group" style="flex:2 1 240px">
       <label>Zoek op adres of stad</label>
-      <input type="text" id="search" placeholder="bijv. Utrecht, Nieuwegracht…" autocomplete="off">
+      <input type="text" id="search" placeholder="bijv. Knokke, Nieuwegracht…" autocomplete="off">
     </div>
     <div class="filter-group">
       <label>Bron</label>
@@ -115,29 +135,27 @@
     </div>
   </div>
 
-  <!-- Rij 2: prijs + straal toggle -->
+  <!-- Rij 2: prijsschuifbalk -->
   <div class="filter-row">
-    <div class="filter-group">
-      <label>Minimumprijs</label>
-      <div class="price-inputs">
-        <input type="number" id="price-min" value="2500000" step="100000" min="0">
+    <div class="slider-block">
+      <label>Prijsrange</label>
+      <div class="price-display">
+        <span id="label-min">€ 0</span>
+        <span id="label-max">€ 5.000.000</span>
+      </div>
+      <div class="range-wrap" id="range-wrap">
+        <div class="range-track"><div class="range-fill" id="range-fill"></div></div>
+        <input type="range" id="slider-min" min="0" max="5000000" step="50000" value="0">
+        <input type="range" id="slider-max" min="0" max="5000000" step="50000" value="5000000">
       </div>
     </div>
-    <div class="filter-group">
-      <label>Maximumprijs</label>
-      <div class="price-inputs">
-        <input type="number" id="price-max" value="5000000" step="100000" min="0">
-      </div>
-    </div>
-    <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
+
+    <!-- Straal toggle + knoppen -->
+    <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto;gap:8px">
       <label>&nbsp;</label>
       <label class="radius-toggle">
-        <input type="checkbox" id="radius-toggle"> Straalfilter inschakelen
+        <input type="checkbox" id="radius-toggle"> Straalfilter
       </label>
-    </div>
-    <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
-      <label>&nbsp;</label>
-      <button class="btn-apply" id="btn-apply">Toepassen</button>
     </div>
     <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
       <label>&nbsp;</label>
@@ -145,17 +163,21 @@
     </div>
   </div>
 
-  <!-- Straal sectie (verborgen tot ingeschakeld) -->
+  <!-- Straal sectie -->
   <div class="radius-section" id="radius-section">
     <div class="filter-row">
       <div class="filter-group" style="flex:3 1 280px">
         <label>Middelpunt adres</label>
-        <input type="text" id="center-address" value="Trancheeweg 18, 6002 ST Weert, NL" placeholder="bijv. Trancheeweg 18, 6002 ST Weert">
-        <span class="radius-hint">Adres wordt opgezocht via OpenStreetMap</span>
+        <input type="text" id="center-address" value="Trancheeweg 18, 6002 ST Weert, NL">
+        <span class="radius-hint">Wordt opgezocht via OpenStreetMap · druk Enter of klik Toepassen</span>
       </div>
-      <div class="filter-group radius-group">
+      <div class="filter-group" style="flex:0 1 120px">
         <label>Straal (km)</label>
         <input type="number" id="radius-km" value="75" min="1" max="500" step="5">
+      </div>
+      <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
+        <label>&nbsp;</label>
+        <button class="btn-apply" id="btn-apply">Toepassen</button>
       </div>
     </div>
     <div id="radius-status" style="font-size:12px;color:#b5a48a"></div>
@@ -188,7 +210,7 @@
       <span class="specs">234 m² · 5 kamers</span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.funda.nl/detail/koop/utrecht/appartement-hoola-van-nootenstraat-278/44488721/" target="_blank" class="btn-funda">Bekijk op Funda →</a>
   </div>
 </article>
@@ -212,7 +234,7 @@
       <span class="specs">672 m² · 15 kamers</span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.funda.nl/detail/koop/utrecht/huis-nieuwegracht-67/43332541/" target="_blank" class="btn-funda">Bekijk op Funda →</a>
   </div>
 </article>
@@ -236,7 +258,7 @@
       <span class="specs">372 m² · 7 kamers</span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.funda.nl/detail/koop/utrecht/appartement-nieuwegracht-19-g/43774096/" target="_blank" class="btn-funda">Bekijk op Funda →</a>
   </div>
 </article>
@@ -260,7 +282,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/knokke-heist/8300/21635289" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -284,7 +306,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/uccle/1180/21634865" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -308,7 +330,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/uccle/1180/21634793" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -332,7 +354,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/uccle/1180/21634657" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -356,7 +378,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/kapellen/2950/21634622" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -380,7 +402,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/uccle/1180/21634274" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -404,7 +426,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/uccle/1180/21634215" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -428,7 +450,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/landhuis/te-koop/hertsberge/8020/21634164" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -452,7 +474,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/rhode-saint-genese/1640/21634087" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -476,7 +498,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/beveren/9120/21633642" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -500,7 +522,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/brasschaat/2930/21633582" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -524,7 +546,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/brussel-2/1020/21328188" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -548,7 +570,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/damme/8340/21632516" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -572,7 +594,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/ixelles/1050/21632340" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -596,7 +618,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/landhuis/te-koop/roeselare/8800/21632270" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -620,7 +642,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/grez-doiceau/1390/21423350" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -644,7 +666,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/etterbeek/1040/21630952" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -668,7 +690,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/merelbeke/9820/21630263" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -692,7 +714,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/brussel-1/1000/20997533" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -716,7 +738,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/wilrijk/2610/21629572" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -740,7 +762,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/wuustwezel/2990/21629320" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -764,7 +786,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/colfontaine/7340/21628819" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -788,7 +810,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21628784" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -812,7 +834,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/brasschaat/2930/20792011" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -836,7 +858,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/kasteel/te-koop/destelbergen/9070/21628439" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -860,7 +882,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21627895" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -884,7 +906,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21627734" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -908,7 +930,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/kalmthout/2920/21627453" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -932,7 +954,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/brasschaat/2930/21627204" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -956,7 +978,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/heers/3870/21626760" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -980,7 +1002,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/uccle/1180/21626644" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1004,7 +1026,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/antwerpen/2018/21626141" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1028,7 +1050,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/kapellen/2950/21624983" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1052,7 +1074,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/kapellen/2950/21624912" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1076,7 +1098,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/lasne/1380/21624637" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1100,7 +1122,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/verlaine/4537/21623716" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1124,7 +1146,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/kasteel/te-koop/brugge/8000/21623495" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1148,7 +1170,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/evergem/9940/21623435" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1172,7 +1194,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/charleroi/6000/21623376" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1196,7 +1218,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/charleroi/6000/21623374" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1220,7 +1242,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/dinant/5500/21623370" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1244,7 +1266,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/montigny-le-tilleul/6110/21623358" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1268,7 +1290,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-zoute/8300/21623306" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1292,7 +1314,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/uccle/1180/21623133" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1316,7 +1338,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21622240" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1340,7 +1362,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/kasteel/te-koop/destelbergen/9070/21622087" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1364,7 +1386,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/ath/7800/21622077" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1388,7 +1410,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-zoute/8300/21621629" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1412,7 +1434,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8301/21101293" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1436,7 +1458,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-zoute/8300/21093681" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1460,7 +1482,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/landhuis/te-koop/gent/9052/21621406" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1484,7 +1506,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/lier/2500/21621190" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1508,7 +1530,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-zoute/8300/21620810" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1532,7 +1554,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke/8300/21620767" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1556,7 +1578,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/leuven/3000/21620744" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1580,7 +1602,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/herenhuis/te-koop/bruxelles/1050/21620641" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1604,7 +1626,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21620633" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1628,7 +1650,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21480967" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1652,7 +1674,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-zoute/8300/21620391" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1676,7 +1698,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21620327" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1700,7 +1722,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21620303" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1724,7 +1746,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/landhuis/te-koop/merelbeke/9820/21619823" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1748,7 +1770,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/damme/8340/21619750" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1772,7 +1794,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21619570" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1796,7 +1818,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/knokke/8300/21619299" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1820,7 +1842,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21619214" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1844,7 +1866,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/halle/1502/21618483" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1868,7 +1890,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/uccle/1180/21566185" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1892,7 +1914,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21354299" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1916,7 +1938,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/boerderij/te-koop/rebecq/1430/21617763" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1940,7 +1962,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/saint-gilles/1060/21617022" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1964,7 +1986,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/herenhuis/te-koop/leuven/3000/21616728" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -1988,7 +2010,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21615952" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2012,7 +2034,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/uccle/1180/21615894" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2036,7 +2058,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/merksem/2170/21615594" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2060,7 +2082,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke/8300/21614302" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2084,7 +2106,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/antwerpen/2000/21614241" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2108,7 +2130,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21613788" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2132,7 +2154,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/hertsberge/8020/21613251" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2156,7 +2178,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21612985" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2180,7 +2202,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/leuven/3000/21569506" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2204,7 +2226,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/leuven/3000/21569502" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2228,7 +2250,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/leuven/3000/21569500" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2252,7 +2274,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/saint-gilles/1060/21487820" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2276,7 +2298,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/saint-gilles/1060/21503021" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2300,7 +2322,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/la-hulpe/1310/21610967" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2324,7 +2346,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/uccle/1180/21610555" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2348,7 +2370,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-zoute/8300/21610019" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2372,7 +2394,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-zoute/8300/20798437" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2396,7 +2418,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/mendonk/9042/21608812" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2420,7 +2442,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21608655" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2444,7 +2466,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/kasteel/te-koop/manage/7170/21608606" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2468,7 +2490,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-zoute/8300/21608499" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2492,7 +2514,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/beveren/9120/21608314" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2516,7 +2538,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/bruxelles/1000/21608048" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2540,7 +2562,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/uccle/1180/21607974" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2564,7 +2586,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/ixelles/1050/21607937" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2588,7 +2610,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/uccle/1180/21607925" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2612,7 +2634,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/herenhuis/te-koop/ixelles/1050/21607655" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2636,7 +2658,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/grez-doiceau/1390/21607365" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2660,7 +2682,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/het-zoute/8300/21606917" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2684,7 +2706,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/ixelles/1050/21606855" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2708,7 +2730,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/uccle/1180/21606618" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2732,7 +2754,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/uccle/1180/21606048" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2756,7 +2778,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/hastiere/5540/21605145" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2780,7 +2802,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21605074" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2804,7 +2826,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21605041" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2828,7 +2850,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/grez-doiceau/1390/21604727" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2852,7 +2874,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/bruxelles/1000/21523115" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2876,7 +2898,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/knokke-zoute/8300/21604247" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2900,7 +2922,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/uccle/1180/21603877" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2924,7 +2946,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-zoute/8300/21603782" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2948,7 +2970,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21603752" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2972,7 +2994,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-heist/8300/21603451" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -2996,7 +3018,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/kraainem/1950/21603178" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3020,7 +3042,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/rhode-saint-genese/1640/21602711" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3044,7 +3066,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/ixelles/1050/21602218" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3068,7 +3090,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/kraainem/1950/21602164" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3092,7 +3114,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/sart-lez-spa/4845/21602145" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3116,7 +3138,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/barvaux/6940/21602144" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3140,7 +3162,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/keerbergen/3140/21601850" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3164,7 +3186,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/bruxelles/1000/21599973" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3188,7 +3210,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke/8300/21599818" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3212,7 +3234,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/21599189" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3236,7 +3258,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/bredene/8450/21599105" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3260,7 +3282,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/lier/2500/21599094" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3284,7 +3306,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/knokke-heist/8300/20966959" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3308,7 +3330,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/knokke-zoute/8300/21598562" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3332,7 +3354,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/leuven/3000/21598556" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3356,7 +3378,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/hennuyeres/7090/21598367" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3380,7 +3402,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/bruxelles/1000/21597133" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3404,7 +3426,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/woluwe-saint-pierre/1150/21596990" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3428,7 +3450,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/villers-la-ville-sart-dames-avelines/1495/21596244" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3452,7 +3474,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/ath/7812/21596196" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3476,7 +3498,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/appartementsblok/te-koop/ganshoren/1083/21596044" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3500,7 +3522,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/gebouw-gemengd-gebruik/te-koop/ganshoren/1083/21596043" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3524,7 +3546,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/antwerpen/2000/21595922" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3548,7 +3570,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/schilde/2970/21595810" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3572,7 +3594,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/schilde/2970/21595748" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3596,7 +3618,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/schilde/2970/21595747" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3620,7 +3642,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/uccle/1180/21595613" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3644,7 +3666,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/rhode-saint-genese/1640/21595360" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3668,7 +3690,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/pecq/7740/21595044" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3692,7 +3714,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/ixelles/1050/21594856" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3716,7 +3738,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/ixelles/1050/21594834" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3740,7 +3762,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/gent/9030/21594715" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3764,7 +3786,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/uccle/1180/21593303" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3788,7 +3810,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/uitzonderlijk-vastgoed/te-koop/knokke-heist/8300/21593241" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3812,7 +3834,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/huis/te-koop/rhode-saint-genese/1640/21593154" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3836,7 +3858,7 @@
       <span class="specs"></span>
       <span class="badge badge-woning">Woning</span>
     </div>
-    <p class="card-distance" data-dist=""></p>
+    <p class="card-distance"></p>
     <a href="https://www.immoweb.be/nl/zoekertje/villa/te-koop/wilrijk/2610/21593009" target="_blank" class="btn-funda">Bekijk op Immoweb →</a>
   </div>
 </article>
@@ -3846,128 +3868,132 @@
 
 <script>
 (function(){
-  // Listing coordinaten (pre-geocoded door Python)
-  const LISTINGS_GEO = [{"id": "44488721", "lat": 52.0870931, "lon": 5.1058011, "price": 2695000, "source": "Funda", "country": "NL"}, {"id": "43332541", "lat": 52.0875747, "lon": 5.1252066, "price": 4700000, "source": "Funda", "country": "NL"}, {"id": "43774096", "lat": 52.0892434, "lon": 5.1238301, "price": 2750000, "source": "Funda", "country": "NL"}, {"id": "immo_21635289", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634865", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634793", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634657", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634622", "lat": 51.3339412, "lon": 4.4437712, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634274", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634215", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634164", "lat": 51.119342, "lon": 3.2303412, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634087", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21633642", "lat": 51.2125282, "lon": 4.243451, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21633582", "lat": 51.3094978, "lon": 4.5004321, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21328188", "lat": 50.88813, "lon": 4.3508256, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21632516", "lat": 51.2521833, "lon": 3.3273816, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21632340", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21632270", "lat": 50.9368342, "lon": 3.1335642, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21423350", "lat": 50.7484827, "lon": 4.6880531, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21630952", "lat": 50.834307, "lon": 4.3920988, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21630263", "lat": 50.9743759, "lon": 3.7407465, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20997533", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21629572", "lat": 51.1642901, "lon": 4.3879102, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21629320", "lat": 51.3940151, "lon": 4.6003612, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21628819", "lat": 50.40588, "lon": 3.8441903, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21628784", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20792011", "lat": 51.3094978, "lon": 4.5004321, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21628439", "lat": 51.0442079, "lon": 3.8093464, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627895", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627734", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627453", "lat": 51.3988592, "lon": 4.4687184, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627204", "lat": 51.3094978, "lon": 4.5004321, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21626760", "lat": 50.7536794, "lon": 5.3119195, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21626644", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21626141", "lat": 51.2045195, "lon": 4.4122174, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21624983", "lat": 51.3339412, "lon": 4.4437712, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21624912", "lat": 51.3339412, "lon": 4.4437712, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21624637", "lat": 50.6823893, "lon": 4.4616941, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623716", "lat": 50.6088097, "lon": 5.3022555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623495", "lat": 51.2338219, "lon": 3.2127283, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623435", "lat": 51.1433424, "lon": 3.7081736, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623376", "lat": 50.4163144, "lon": 4.4485344, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623374", "lat": 50.4163144, "lon": 4.4485344, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623370", "lat": 50.2355591, "lon": 4.9157078, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623358", "lat": 50.3722319, "lon": 4.3777923, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623306", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623133", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21622240", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21622087", "lat": 51.0442079, "lon": 3.8093464, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21622077", "lat": 50.6335333, "lon": 3.7845678, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21621629", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21101293", "lat": 51.3284756, "lon": 3.2525613, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21093681", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21621406", "lat": 51.0040748, "lon": 3.7093758, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21621190", "lat": 51.1183462, "lon": 4.5738888, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620810", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620767", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620744", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620641", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620633", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21480967", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620391", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620327", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620303", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619823", "lat": 50.9743759, "lon": 3.7407465, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619750", "lat": 51.2521833, "lon": 3.3273816, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619570", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619299", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619214", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21618483", "lat": 50.7103428, "lon": 4.2174655, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21566185", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21354299", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21617763", "lat": 50.6714526, "lon": 4.130427, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21617022", "lat": 50.8294853, "lon": 4.3446555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21616728", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21615952", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21615894", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21615594", "lat": 51.2514415, "lon": 4.4440277, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21614302", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21614241", "lat": 51.2174645, "lon": 4.3979356, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21613788", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21613251", "lat": 51.119342, "lon": 3.2303412, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21612985", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21569506", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21569502", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21569500", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21487820", "lat": 50.8294853, "lon": 4.3446555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21503021", "lat": 50.8294853, "lon": 4.3446555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21610967", "lat": 50.7363251, "lon": 4.4648811, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21610555", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21610019", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20798437", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608812", "lat": 51.1485097, "lon": 3.8002014, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608655", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608606", "lat": 50.4932427, "lon": 4.2390907, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608499", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608314", "lat": 51.2125282, "lon": 4.243451, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608048", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607974", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607937", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607925", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607655", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607365", "lat": 50.7484827, "lon": 4.6880531, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606917", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606855", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606618", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606048", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21605145", "lat": 50.2132199, "lon": 4.8287417, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21605074", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21605041", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21604727", "lat": 50.7484827, "lon": 4.6880531, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21523115", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21604247", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603877", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603782", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603752", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603451", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603178", "lat": 50.8453758, "lon": 4.4713497, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602711", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602218", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602164", "lat": 50.8453758, "lon": 4.4713497, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602145", "lat": 50.530837, "lon": 5.9665623, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602144", "lat": 50.3360596, "lon": 5.4593513, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21601850", "lat": 51.0051977, "lon": 4.6543022, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599973", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599818", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599189", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599105", "lat": 51.2380905, "lon": 2.9762888, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599094", "lat": 51.1183462, "lon": 4.5738888, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20966959", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21598562", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21598556", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21598367", "lat": 50.6161694, "lon": 4.1424534, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21597133", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596990", "lat": 50.8311008, "lon": 4.4430891, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596244", "lat": 50.5624555, "lon": 4.5267813, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596196", "lat": 50.6365511, "lon": 3.7090078, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596044", "lat": 50.8743847, "lon": 4.3094849, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596043", "lat": 50.8743847, "lon": 4.3094849, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595922", "lat": 51.2174645, "lon": 4.3979356, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595810", "lat": 51.2561905, "lon": 4.5814882, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595748", "lat": 51.2561905, "lon": 4.5814882, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595747", "lat": 51.2561905, "lon": 4.5814882, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595613", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595360", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595044", "lat": 50.6960043, "lon": 3.3354715, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21594856", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21594834", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21594715", "lat": 51.0745268, "lon": 3.6767722, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593303", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593241", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593154", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593009", "lat": 51.1642901, "lon": 4.3879102, "price": null, "source": "Immoweb", "country": "BE"}];
+  const SLIDER_MIN_VAL = 0;
+  const SLIDER_MAX_VAL = 5000000;
+  const LISTINGS_GEO   = [{"id": "44488721", "lat": 52.0870931, "lon": 5.1058011, "price": 2695000, "source": "Funda", "country": "NL"}, {"id": "43332541", "lat": 52.0875747, "lon": 5.1252066, "price": 4700000, "source": "Funda", "country": "NL"}, {"id": "43774096", "lat": 52.0892434, "lon": 5.1238301, "price": 2750000, "source": "Funda", "country": "NL"}, {"id": "immo_21635289", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634865", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634793", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634657", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634622", "lat": 51.3339412, "lon": 4.4437712, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634274", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634215", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634164", "lat": 51.119342, "lon": 3.2303412, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21634087", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21633642", "lat": 51.2125282, "lon": 4.243451, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21633582", "lat": 51.3094978, "lon": 4.5004321, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21328188", "lat": 50.88813, "lon": 4.3508256, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21632516", "lat": 51.2521833, "lon": 3.3273816, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21632340", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21632270", "lat": 50.9368342, "lon": 3.1335642, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21423350", "lat": 50.7484827, "lon": 4.6880531, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21630952", "lat": 50.834307, "lon": 4.3920988, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21630263", "lat": 50.9743759, "lon": 3.7407465, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20997533", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21629572", "lat": 51.1642901, "lon": 4.3879102, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21629320", "lat": 51.3940151, "lon": 4.6003612, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21628819", "lat": 50.40588, "lon": 3.8441903, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21628784", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20792011", "lat": 51.3094978, "lon": 4.5004321, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21628439", "lat": 51.0442079, "lon": 3.8093464, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627895", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627734", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627453", "lat": 51.3988592, "lon": 4.4687184, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21627204", "lat": 51.3094978, "lon": 4.5004321, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21626760", "lat": 50.7536794, "lon": 5.3119195, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21626644", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21626141", "lat": 51.2045195, "lon": 4.4122174, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21624983", "lat": 51.3339412, "lon": 4.4437712, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21624912", "lat": 51.3339412, "lon": 4.4437712, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21624637", "lat": 50.6823893, "lon": 4.4616941, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623716", "lat": 50.6088097, "lon": 5.3022555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623495", "lat": 51.2338219, "lon": 3.2127283, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623435", "lat": 51.1433424, "lon": 3.7081736, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623376", "lat": 50.4163144, "lon": 4.4485344, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623374", "lat": 50.4163144, "lon": 4.4485344, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623370", "lat": 50.2355591, "lon": 4.9157078, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623358", "lat": 50.3722319, "lon": 4.3777923, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623306", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21623133", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21622240", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21622087", "lat": 51.0442079, "lon": 3.8093464, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21622077", "lat": 50.6335333, "lon": 3.7845678, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21621629", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21101293", "lat": 51.3284756, "lon": 3.2525613, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21093681", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21621406", "lat": 51.0040748, "lon": 3.7093758, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21621190", "lat": 51.1183462, "lon": 4.5738888, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620810", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620767", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620744", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620641", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620633", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21480967", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620391", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620327", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21620303", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619823", "lat": 50.9743759, "lon": 3.7407465, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619750", "lat": 51.2521833, "lon": 3.3273816, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619570", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619299", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21619214", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21618483", "lat": 50.7103428, "lon": 4.2174655, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21566185", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21354299", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21617763", "lat": 50.6714526, "lon": 4.130427, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21617022", "lat": 50.8294853, "lon": 4.3446555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21616728", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21615952", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21615894", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21615594", "lat": 51.2514415, "lon": 4.4440277, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21614302", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21614241", "lat": 51.2174645, "lon": 4.3979356, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21613788", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21613251", "lat": 51.119342, "lon": 3.2303412, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21612985", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21569506", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21569502", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21569500", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21487820", "lat": 50.8294853, "lon": 4.3446555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21503021", "lat": 50.8294853, "lon": 4.3446555, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21610967", "lat": 50.7363251, "lon": 4.4648811, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21610555", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21610019", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20798437", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608812", "lat": 51.1485097, "lon": 3.8002014, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608655", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608606", "lat": 50.4932427, "lon": 4.2390907, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608499", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608314", "lat": 51.2125282, "lon": 4.243451, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21608048", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607974", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607937", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607925", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607655", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21607365", "lat": 50.7484827, "lon": 4.6880531, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606917", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606855", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606618", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21606048", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21605145", "lat": 50.2132199, "lon": 4.8287417, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21605074", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21605041", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21604727", "lat": 50.7484827, "lon": 4.6880531, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21523115", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21604247", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603877", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603782", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603752", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603451", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21603178", "lat": 50.8453758, "lon": 4.4713497, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602711", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602218", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602164", "lat": 50.8453758, "lon": 4.4713497, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602145", "lat": 50.530837, "lon": 5.9665623, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21602144", "lat": 50.3360596, "lon": 5.4593513, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21601850", "lat": 51.0051977, "lon": 4.6543022, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599973", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599818", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599189", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599105", "lat": 51.2380905, "lon": 2.9762888, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21599094", "lat": 51.1183462, "lon": 4.5738888, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_20966959", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21598562", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21598556", "lat": 50.8778164, "lon": 4.7016456, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21598367", "lat": 50.6161694, "lon": 4.1424534, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21597133", "lat": 50.8461604, "lon": 4.3662155, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596990", "lat": 50.8311008, "lon": 4.4430891, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596244", "lat": 50.5624555, "lon": 4.5267813, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596196", "lat": 50.6365511, "lon": 3.7090078, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596044", "lat": 50.8743847, "lon": 4.3094849, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21596043", "lat": 50.8743847, "lon": 4.3094849, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595922", "lat": 51.2174645, "lon": 4.3979356, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595810", "lat": 51.2561905, "lon": 4.5814882, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595748", "lat": 51.2561905, "lon": 4.5814882, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595747", "lat": 51.2561905, "lon": 4.5814882, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595613", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595360", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21595044", "lat": 50.6960043, "lon": 3.3354715, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21594856", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21594834", "lat": 50.8215461, "lon": 4.3770817, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21594715", "lat": 51.0745268, "lon": 3.6767722, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593303", "lat": 50.7898708, "lon": 4.3613778, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593241", "lat": 51.3337572, "lon": 3.3255311, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593154", "lat": 50.744502, "lon": 4.3737422, "price": null, "source": "Immoweb", "country": "BE"}, {"id": "immo_21593009", "lat": 51.1642901, "lon": 4.3879102, "price": null, "source": "Immoweb", "country": "BE"}];
 
-  const grid       = document.getElementById('grid');
-  const cards      = Array.from(grid.querySelectorAll('.card'));
-  const searchEl   = document.getElementById('search');
-  const sortEl     = document.getElementById('sort');
-  const srcEl      = document.getElementById('filter-source');
-  const cntryEl    = document.getElementById('filter-country');
-  const priceMinEl = document.getElementById('price-min');
-  const priceMaxEl = document.getElementById('price-max');
-  const radToggle  = document.getElementById('radius-toggle');
-  const radSection = document.getElementById('radius-section');
-  const centerEl   = document.getElementById('center-address');
-  const radiusEl   = document.getElementById('radius-km');
-  const radStatus  = document.getElementById('radius-status');
-  const statsEl    = document.getElementById('visible-count');
-  const applyBtn   = document.getElementById('btn-apply');
-  const clearBtn   = document.getElementById('btn-clear');
+  const grid      = document.getElementById('grid');
+  const cards     = Array.from(grid.querySelectorAll('.card'));
+  const searchEl  = document.getElementById('search');
+  const sortEl    = document.getElementById('sort');
+  const srcEl     = document.getElementById('filter-source');
+  const cntryEl   = document.getElementById('filter-country');
+  const sMin      = document.getElementById('slider-min');
+  const sMax      = document.getElementById('slider-max');
+  const labelMin  = document.getElementById('label-min');
+  const labelMax  = document.getElementById('label-max');
+  const fill      = document.getElementById('range-fill');
+  const radToggle = document.getElementById('radius-toggle');
+  const radSection= document.getElementById('radius-section');
+  const centerEl  = document.getElementById('center-address');
+  const radiusEl  = document.getElementById('radius-km');
+  const radStatus = document.getElementById('radius-status');
+  const statsEl   = document.getElementById('visible-count');
+  const applyBtn  = document.getElementById('btn-apply');
+  const clearBtn  = document.getElementById('btn-clear');
 
-  let centerLat = null;
-  let centerLon = null;
-  let geoByCard = {};
+  let centerLat = null, centerLon = null;
 
-  // Bouw lookup: card id → lat/lon
-  LISTINGS_GEO.forEach(l => {
-    if (l.lat && l.lon) geoByCard[l.id] = [l.lat, l.lon];
-  });
-
-  // Haversine afstand in km
-  function haversine(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  // ── Prijsopmaak ──
+  function fmtPrice(v) {
+    return '€ ' + Math.round(v).toLocaleString('nl-NL');
   }
 
-  // Geocodeer adres via Nominatim
-  async function geocodeAddress(address) {
+  // ── Slider bijwerken ──
+  function updateSlider() {
+    let lo = parseInt(sMin.value);
+    let hi = parseInt(sMax.value);
+    if (lo > hi) { [lo, hi] = [hi, lo]; sMin.value = lo; sMax.value = hi; }
+    labelMin.textContent = fmtPrice(lo);
+    labelMax.textContent = fmtPrice(hi);
+    const pct1 = (lo - SLIDER_MIN_VAL) / (SLIDER_MAX_VAL - SLIDER_MIN_VAL) * 100;
+    const pct2 = (hi - SLIDER_MIN_VAL) / (SLIDER_MAX_VAL - SLIDER_MIN_VAL) * 100;
+    fill.style.left  = pct1 + '%';
+    fill.style.width = (pct2 - pct1) + '%';
+    applyFilters();
+  }
+
+  sMin.addEventListener('input', updateSlider);
+  sMax.addEventListener('input', updateSlider);
+
+  // ── Overige filters — direct, zonder knop ──
+  searchEl.addEventListener('input', applyFilters);
+  srcEl.addEventListener('change', applyFilters);
+  cntryEl.addEventListener('change', applyFilters);
+  sortEl.addEventListener('change', applyFilters);
+
+  // ── Haversine ──
+  function haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371, d2r = Math.PI/180;
+    const dLat = (lat2-lat1)*d2r, dLon = (lon2-lon1)*d2r;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*d2r)*Math.cos(lat2*d2r)*Math.sin(dLon/2)**2;
+    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  }
+
+  // ── Geocodeer middelpunt ──
+  async function geocodeCenter() {
     radStatus.textContent = 'Adres opzoeken…';
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+    const url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(centerEl.value) + '&format=json&limit=1';
     try {
-      const resp = await fetch(url, {headers: {'Accept-Language': 'nl'}});
-      const data = await resp.json();
-      if (data && data.length > 0) {
+      const data = await fetch(url, {headers:{'Accept-Language':'nl'}}).then(r=>r.json());
+      if (data.length) {
         centerLat = parseFloat(data[0].lat);
         centerLon = parseFloat(data[0].lon);
-        radStatus.textContent = `✓ Middelpunt: ${data[0].display_name.split(',').slice(0,2).join(',')}`;
-        return true;
+        radStatus.textContent = '✓ ' + data[0].display_name.split(',').slice(0,2).join(',');
+        applyFilters();
       } else {
-        radStatus.textContent = '✗ Adres niet gevonden. Probeer een andere omschrijving.';
-        return false;
+        radStatus.textContent = '✗ Adres niet gevonden';
       }
-    } catch(e) {
-      radStatus.textContent = '✗ Fout bij opzoeken adres.';
-      return false;
-    }
+    } catch(e) { radStatus.textContent = '✗ Fout bij opzoeken'; }
   }
 
-  // Straal toggle
+  // ── Straal toggle ──
   radToggle.addEventListener('change', () => {
     radSection.classList.toggle('open', radToggle.checked);
     if (!radToggle.checked) { centerLat = null; centerLon = null; applyFilters(); }
   });
+  applyBtn.addEventListener('click', geocodeCenter);
+  centerEl.addEventListener('keydown', e => { if(e.key==='Enter') geocodeCenter(); });
+  radiusEl.addEventListener('change', () => { if(centerLat) applyFilters(); });
 
-  // Toepassen knop
-  applyBtn.addEventListener('click', async () => {
-    if (radToggle.checked && !centerLat) {
-      const ok = await geocodeAddress(centerEl.value);
-      if (!ok) return;
-    } else if (radToggle.checked && centerEl.value !== applyBtn.dataset.lastAddress) {
-      // Adres gewijzigd
-      const ok = await geocodeAddress(centerEl.value);
-      if (!ok) return;
-      applyBtn.dataset.lastAddress = centerEl.value;
-    }
-    applyFilters();
-  });
-
+  // ── Filters toepassen ──
   function applyFilters() {
-    const q       = searchEl.value.toLowerCase().trim();
-    const src     = srcEl.value;
-    const cntry   = cntryEl.value;
-    const pMin    = parseFloat(priceMinEl.value) || 0;
-    const pMax    = parseFloat(priceMaxEl.value) || Infinity;
-    const useRad  = radToggle.checked && centerLat !== null;
-    const radKm   = parseFloat(radiusEl.value) || 999;
+    const q      = searchEl.value.toLowerCase().trim();
+    const src    = srcEl.value;
+    const cntry  = cntryEl.value;
+    const pLo    = parseInt(sMin.value);
+    const pHi    = parseInt(sMax.value);
+    const useRad = radToggle.checked && centerLat !== null;
+    const radKm  = parseFloat(radiusEl.value) || 999;
 
     cards.forEach(card => {
-      const addr   = (card.querySelector('.card-address')?.textContent || '').toLowerCase();
-      const city   = (card.querySelector('.card-city')?.textContent    || '').toLowerCase();
+      const addr   = (card.querySelector('.card-address')?.textContent||'').toLowerCase();
+      const city   = (card.querySelector('.card-city')?.textContent||'').toLowerCase();
       const price  = parseInt(card.dataset.price) || 0;
-      const csrc   = card.dataset.source || '';
-      const ccntry = card.dataset.country || '';
+      const csrc   = card.dataset.source||'';
+      const ccntry = card.dataset.country||'';
       const clat   = parseFloat(card.dataset.lat);
       const clon   = parseFloat(card.dataset.lon);
 
-      const mSearch = !q || addr.includes(q) || city.includes(q);
-      const mSrc    = !src || csrc === src;
-      const mCntry  = !cntry || ccntry === cntry;
-      const mPrice  = price >= pMin && price <= pMax;
+      // Prijs: listings zonder prijs (0) altijd tonen
+      const mPrice = price === 0 || (price >= pLo && price <= pHi);
+      const mSearch= !q || addr.includes(q) || city.includes(q);
+      const mSrc   = !src   || csrc   === src;
+      const mCntry = !cntry || ccntry === cntry;
 
       let mDist = true;
       let distKm = null;
-      if (useRad) {
-        if (!isNaN(clat) && !isNaN(clon)) {
-          distKm = haversine(centerLat, centerLon, clat, clon);
-          mDist = distKm <= radKm;
-        } else {
-          mDist = false; // Geen coördinaten → verbergen bij straalfilter
-        }
+      if (useRad && !isNaN(clat) && !isNaN(clon)) {
+        distKm = haversine(centerLat, centerLon, clat, clon);
+        mDist = distKm <= radKm;
+      } else if (useRad) {
+        mDist = false;
       }
 
-      const visible = mSearch && mSrc && mCntry && mPrice && mDist;
-      card.classList.toggle('hidden', !visible);
+      card.classList.toggle('hidden', !(mPrice && mSearch && mSrc && mCntry && mDist));
 
-      // Toon afstand op kaart
-      const distEl = card.querySelector('.card-distance');
-      if (distEl) {
-        distEl.textContent = distKm !== null ? `${distKm.toFixed(1)} km van middelpunt` : '';
-      }
+      const dEl = card.querySelector('.card-distance');
+      if (dEl) dEl.textContent = distKm !== null ? distKm.toFixed(1)+' km van middelpunt' : '';
     });
 
     applySort();
@@ -3975,59 +4001,45 @@
   }
 
   function applySort() {
-    const val     = sortEl.value;
-    const visible = cards.filter(c => !c.classList.contains('hidden'));
+    const val = sortEl.value;
     if (val === 'default') return;
-
-    visible.sort((a, b) => {
-      if (val === 'price-asc')  return (parseInt(a.dataset.price)||0) - (parseInt(b.dataset.price)||0);
-      if (val === 'price-desc') return (parseInt(b.dataset.price)||0) - (parseInt(a.dataset.price)||0);
-      if (val === 'dist-asc') {
-        const da = parseFloat(a.querySelector('.card-distance')?.textContent) || 9999;
-        const db = parseFloat(b.querySelector('.card-distance')?.textContent) || 9999;
-        return da - db;
+    const visible = cards.filter(c=>!c.classList.contains('hidden'));
+    visible.sort((a,b) => {
+      if (val==='price-asc')  return (parseInt(a.dataset.price)||0)-(parseInt(b.dataset.price)||0);
+      if (val==='price-desc') return (parseInt(b.dataset.price)||0)-(parseInt(a.dataset.price)||0);
+      if (val==='dist-asc') {
+        const da = parseFloat(a.querySelector('.card-distance')?.textContent)||9999;
+        const db = parseFloat(b.querySelector('.card-distance')?.textContent)||9999;
+        return da-db;
       }
       return 0;
     });
-    visible.forEach(c => grid.appendChild(c));
+    visible.forEach(c=>grid.appendChild(c));
   }
 
   function updateStats() {
-    const n = cards.filter(c => !c.classList.contains('hidden')).length;
+    const n = cards.filter(c=>!c.classList.contains('hidden')).length;
     statsEl.textContent = n;
-    let noRes = grid.querySelector('.no-results');
-    if (n === 0 && cards.length > 0) {
-      if (!noRes) {
-        noRes = document.createElement('p');
-        noRes.className = 'no-results';
-        noRes.textContent = 'Geen objecten gevonden voor deze filters.';
-        grid.appendChild(noRes);
-      }
-    } else if (noRes) noRes.remove();
+    let nr = grid.querySelector('.no-results');
+    if (n===0 && cards.length>0) {
+      if (!nr) { nr=document.createElement('p'); nr.className='no-results'; nr.textContent='Geen objecten gevonden.'; grid.appendChild(nr); }
+    } else if (nr) nr.remove();
   }
 
+  // ── Alles wissen ──
   clearBtn.addEventListener('click', () => {
-    searchEl.value = '';
-    srcEl.value = '';
-    cntryEl.value = '';
-    priceMinEl.value = '2500000';
-    priceMaxEl.value = '5000000';
-    sortEl.value = 'default';
-    radToggle.checked = false;
-    radSection.classList.remove('open');
-    centerLat = null; centerLon = null;
-    radStatus.textContent = '';
-    cards.forEach(c => {
-      c.classList.remove('hidden');
-      const d = c.querySelector('.card-distance');
-      if (d) d.textContent = '';
-    });
-    cards.forEach(c => grid.appendChild(c));
+    searchEl.value=''; srcEl.value=''; cntryEl.value=''; sortEl.value='default';
+    sMin.value=SLIDER_MIN_VAL; sMax.value=SLIDER_MAX_VAL;
+    radToggle.checked=false; radSection.classList.remove('open');
+    centerLat=null; centerLon=null; radStatus.textContent='';
+    updateSlider();
+    cards.forEach(c=>{ c.classList.remove('hidden'); const d=c.querySelector('.card-distance'); if(d) d.textContent=''; });
+    cards.forEach(c=>grid.appendChild(c));
     updateStats();
   });
 
-  searchEl.addEventListener('keydown', e => { if (e.key === 'Enter') applyBtn.click(); });
-  updateStats();
+  // Init
+  updateSlider();
 })();
 </script>
 </body>
