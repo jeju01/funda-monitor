@@ -94,9 +94,12 @@ def build_dashboard(listings: list[dict]) -> str:
 
     listings_json = json.dumps([
         {"id": l.get("id"), "lat": l.get("lat"), "lon": l.get("lon"),
-         "price": l.get("price", 0), "source": l.get("source", ""),
-         "country": l.get("country", "NL")}
+         "price": l.get("price", 0), "price_fmt": l.get("price_formatted", ""),
+         "address": l.get("address", ""), "city": l.get("city", ""),
+         "source": l.get("source", ""), "country": l.get("country", "NL"),
+         "url": l.get("funda_url", "")}
         for l in listings
+        if l.get("lat") and l.get("lon")
     ])
 
     def js_price(v):
@@ -108,6 +111,8 @@ def build_dashboard(listings: list[dict]) -> str:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Vastgoedmonitor | Lammers Beton</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
   <style>
     *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
     body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;background:#f5f1ec;color:#2c2c2c;min-height:100vh}}
@@ -276,6 +281,44 @@ def build_dashboard(listings: list[dict]) -> str:
     .btn-funda{{display:block;margin-top:10px;padding:9px 16px;background:#b5a48a;color:#fff;text-decoration:none;font-size:13px;font-weight:600;border-radius:6px;transition:background .2s;text-align:center}}
     .btn-funda:hover{{background:#9d8e77}}
     .empty,.no-results{{grid-column:1/-1;text-align:center;padding:60px 20px;color:#9a8e82;font-size:15px}}
+
+    /* ── Kaart ── */
+    #map{{height:520px;width:100%;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}}
+    .map-toolbar{{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}}
+    .map-toolbar p{{font-size:13px;color:#8a7d6e;flex:1}}
+    .btn-draw{{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:10px 20px;background:linear-gradient(135deg,#c9b89e,#b5a48a);
+      color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;
+      cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(181,164,138,.4)
+    }}
+    .btn-draw:hover{{transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,164,138,.5)}}
+    .btn-draw svg{{flex-shrink:0}}
+    .btn-draw-clear{{
+      padding:10px 16px;background:transparent;color:#aaa;
+      border:1.5px solid #e8e0d5;border-radius:9px;font-size:13px;
+      cursor:pointer;transition:all .2s;display:none
+    }}
+    .btn-draw-clear.visible{{display:inline-block}}
+    .btn-draw-clear:hover{{background:#f5f1ec;color:#666}}
+    .map-result-pill{{
+      display:none;align-items:center;gap:6px;
+      background:#1a1a1a;color:#fff;border-radius:50px;
+      padding:8px 18px;font-size:13px;font-weight:600
+    }}
+    .map-result-pill.visible{{display:inline-flex}}
+    .map-result-pill span{{color:#b5a48a}}
+    .leaflet-draw-toolbar a{{background-color:#b5a48a!important}}
+    .leaflet-popup-content-wrapper{{border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.15)}}
+    .map-popup{{font-family:-apple-system,sans-serif;min-width:180px}}
+    .map-popup strong{{display:block;font-size:13px;color:#1a1a1a;margin-bottom:2px}}
+    .map-popup .mp-city{{font-size:11px;color:#9a8e82;margin-bottom:6px}}
+    .map-popup .mp-price{{font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:8px}}
+    .map-popup a{{
+      display:block;text-align:center;padding:7px 12px;
+      background:#b5a48a;color:#fff;text-decoration:none;
+      border-radius:6px;font-size:12px;font-weight:600
+    }}
     footer{{
       background:linear-gradient(135deg,#1a1a1a,#2e2620);
       color:#5a5040;text-align:center;padding:24px;font-size:11px;
@@ -349,28 +392,20 @@ def build_dashboard(listings: list[dict]) -> str:
       </div>
     </div>
 
-    <!-- GEBIED filters -->
+    <!-- GEBIED kaart -->
     <div id="panel-gebied" style="display:none">
-      <div class="filter-row">
-        <div class="filter-group" style="flex:3 1 260px">
-          <label>Middelpunt adres</label>
-          <input type="text" id="center-address" value="{CENTER_ADDRESS}">
-          <span class="radius-hint">Opgezocht via OpenStreetMap — druk Enter of klik Toepassen</span>
+      <div class="map-toolbar">
+        <p id="map-hint">Teken een gebied op de kaart om panden te filteren.</p>
+        <div class="map-result-pill" id="map-result-pill">
+          <span id="map-result-count">0</span> panden in getekend gebied
         </div>
-        <div class="filter-group" style="flex:0 1 120px">
-          <label>Straal (km)</label>
-          <input type="number" id="radius-km" value="{DEFAULT_RADIUS_KM}" min="1" max="500" step="5">
-        </div>
-        <div class="filter-group" style="flex:0 1 auto;justify-content:flex-end">
-          <label>&nbsp;</label>
-          <button class="btn-apply" id="btn-apply">Toepassen</button>
-        </div>
-        <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
-          <label>&nbsp;</label>
-          <button class="btn-clear-gebied" id="btn-clear-gebied">Wis</button>
-        </div>
+        <button class="btn-draw" id="btn-draw">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          Teken gebied
+        </button>
+        <button class="btn-draw-clear" id="btn-draw-clear">✕ Wis gebied</button>
       </div>
-      <div id="radius-status" style="font-size:12px;color:#b5a48a;margin-top:4px"></div>
+      <div id="map"></div>
     </div>
 
   </div>
@@ -385,6 +420,9 @@ def build_dashboard(listings: list[dict]) -> str:
 </main>
 
 <footer>Automatisch gegenereerd op {today} &nbsp;|&nbsp; Lammers Beton vastgoedmonitor</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 
 <script>
 (function(){{
@@ -415,6 +453,117 @@ def build_dashboard(listings: list[dict]) -> str:
   let centerLat = null, centerLon = null;
   let activeTab = 'algemeen';
 
+  // ── Kaart (initialiseer alleen als Leaflet beschikbaar is) ──
+  const GEO_LISTINGS = {listings_json};
+  let map = null, drawnLayer = null, activePolygon = null;
+  let polygonFilter = null; // null = geen filter, anders array van [lat,lon] punten
+
+  function initMap() {{
+    if (map) return;
+    map = L.map('map').setView([51.5, 5.0], 7);
+    L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+      attribution: '© OpenStreetMap',
+      maxZoom: 18
+    }}).addTo(map);
+
+    // Markers
+    const srcColors = {{ Funda: '#ff6b00', Immoweb: '#003da5' }};
+    GEO_LISTINGS.forEach(l => {{
+      if (!l.lat || !l.lon) return;
+      const color = srcColors[l.source] || '#b5a48a';
+      const icon = L.divIcon({{
+        className: '',
+        html: `<div style="width:10px;height:10px;border-radius:50%;background:${{color}};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
+        iconSize: [10, 10], iconAnchor: [5, 5]
+      }});
+      const marker = L.marker([l.lat, l.lon], {{icon}}).addTo(map);
+      marker.bindPopup(`
+        <div class="map-popup">
+          <strong>${{l.address}}</strong>
+          <div class="mp-city">${{l.city}} · ${{l.country}}</div>
+          <div class="mp-price">${{l.price_fmt || 'Prijs onbekend'}}</div>
+          <a href="${{l.url}}" target="_blank">Bekijk op ${{l.source}} →</a>
+        </div>`, {{maxWidth: 220}});
+      marker._listingId = l.id;
+    }});
+
+    // Teken-laag
+    drawnLayer = new L.FeatureGroup().addTo(map);
+    const drawCtrl = new L.Control.Draw({{
+      draw: {{
+        polygon: {{ shapeOptions: {{ color: '#b5a48a', fillOpacity: 0.15, weight: 2 }} }},
+        polyline: false, rectangle: false, circle: false,
+        circlemarker: false, marker: false
+      }},
+      edit: {{ featureGroup: drawnLayer }}
+    }});
+    map.addControl(drawCtrl);
+
+    map.on(L.Draw.Event.CREATED, e => {{
+      drawnLayer.clearLayers();
+      drawnLayer.addLayer(e.layer);
+      activePolygon = e.layer.getLatLngs()[0];
+      polygonFilter = activePolygon.map(p => [p.lat, p.lng]);
+      applyPolygonFilter();
+    }});
+    map.on(L.Draw.Event.DELETED, () => {{ clearPolygonFilter(); }});
+
+    // Knop "Teken gebied" activeert de Leaflet draw mode
+    document.getElementById('btn-draw').addEventListener('click', () => {{
+      const drawHandler = new L.Draw.Polygon(map, {{
+        shapeOptions: {{ color: '#b5a48a', fillOpacity: 0.15, weight: 2 }}
+      }});
+      drawHandler.enable();
+    }});
+
+    document.getElementById('btn-draw-clear').addEventListener('click', () => {{
+      drawnLayer.clearLayers();
+      clearPolygonFilter();
+    }});
+  }}
+
+  function pointInPolygon(point, polygon) {{
+    const [px, py] = point;
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {{
+      const [xi, yi] = polygon[i], [xj, yj] = polygon[j];
+      if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi))
+        inside = !inside;
+    }}
+    return inside;
+  }}
+
+  function applyPolygonFilter() {{
+    if (!polygonFilter) return;
+    const geoById = {{}};
+    GEO_LISTINGS.forEach(l => {{ if (l.lat && l.lon) geoById[l.id] = [l.lat, l.lon]; }});
+    let count = 0;
+    cards.forEach(card => {{
+      const coords = geoById[card.dataset.id];
+      if (coords && pointInPolygon(coords, polygonFilter)) {{
+        card.classList.remove('polygon-hidden');
+        count++;
+      }} else {{
+        card.classList.add('polygon-hidden');
+      }}
+    }});
+    document.getElementById('map-result-count').textContent = count;
+    document.getElementById('map-result-pill').classList.add('visible');
+    document.getElementById('btn-draw-clear').classList.add('visible');
+    document.getElementById('map-hint').textContent = 'Gebied geselecteerd — bekijk resultaten in het tabblad Algemeen.';
+    switchTab('algemeen');
+    applyFilters();
+  }}
+
+  function clearPolygonFilter() {{
+    polygonFilter = null;
+    cards.forEach(c => c.classList.remove('polygon-hidden'));
+    document.getElementById('map-result-pill').classList.remove('visible');
+    document.getElementById('btn-draw-clear').classList.remove('visible');
+    document.getElementById('map-hint').textContent = 'Teken een gebied op de kaart om panden te filteren.';
+    applyFilters();
+  }}
+
   // ── Tab wisselen ──
   window.switchTab = function(tab) {{
     activeTab = tab;
@@ -422,8 +571,7 @@ def build_dashboard(listings: list[dict]) -> str:
     document.getElementById('panel-gebied').style.display   = tab === 'gebied'   ? '' : 'none';
     document.getElementById('tab-algemeen').classList.toggle('active', tab === 'algemeen');
     document.getElementById('tab-gebied').classList.toggle('active', tab === 'gebied');
-    // Gebied: forceer straalfilter aan/uit
-    if (tab === 'algemeen') {{ centerLat = null; centerLon = null; }}
+    if (tab === 'gebied') {{ setTimeout(initMap, 50); }}
     applyFilters();
   }};
 
@@ -540,10 +688,11 @@ def build_dashboard(listings: list[dict]) -> str:
       const clon   = parseFloat(card.dataset.lon);
 
       // Prijs: listings zonder prijs (0) altijd tonen
-      const mPrice = price === 0 || (price >= pLo && price <= pHi);
-      const mSearch= !q || addr.includes(q) || city.includes(q);
-      const mSrc   = !src   || csrc   === src;
-      const mCntry = !cntry || ccntry === cntry;
+      const mPrice   = price === 0 || (price >= pLo && price <= pHi);
+      const mSearch  = !q || addr.includes(q) || city.includes(q);
+      const mSrc     = !src   || csrc   === src;
+      const mCntry   = !cntry || ccntry === cntry;
+      const mPolygon = !polygonFilter || !card.classList.contains('polygon-hidden');
 
       let mDist = true;
       let distKm = null;
@@ -554,7 +703,7 @@ def build_dashboard(listings: list[dict]) -> str:
         mDist = false;
       }}
 
-      card.classList.toggle('hidden', !(mPrice && mSearch && mSrc && mCntry && mDist));
+      card.classList.toggle('hidden', !(mPrice && mSearch && mSrc && mCntry && mDist && mPolygon));
 
       const dEl = card.querySelector('.card-distance');
       if (dEl) dEl.textContent = distKm !== null ? distKm.toFixed(1)+' km van middelpunt' : '';
