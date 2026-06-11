@@ -88,11 +88,20 @@ def _extract_card(card) -> Optional[dict]:
                 price_int, price_display = _parse_price(txt)
                 if price_int:
                     break
-        # Fallback: zichtbare prijstekst (inclusief complexe formaten)
+        # Fallback: zichtbare prijstekst — sr-only spans weggooien via JS
+        # zodat "€ 95.000 + € 1.275/maand" en "95000€ + 1275€ per maand" niet samengevoegd worden
         if not price_int:
             price_el = card.locator("[class*=card--result__price]").first
             if price_el.count():
-                visible_text = _dedup_text(price_el.inner_text())
+                try:
+                    visible_text = price_el.evaluate("""el => {
+                        const clone = el.cloneNode(true);
+                        clone.querySelectorAll('.sr-only').forEach(e => e.remove());
+                        return clone.innerText.trim();
+                    }""")
+                except Exception:
+                    visible_text = price_el.inner_text().strip()
+                visible_text = _dedup_text(visible_text)
                 price_int, price_display = _parse_price(visible_text)
                 if not price_display:
                     price_display = visible_text
