@@ -120,13 +120,14 @@ def build_dashboard(listings: list[dict]) -> str:
     /* ── Hero header ── */
     .hero{{
       background:
-        linear-gradient(135deg,rgba(20,16,12,.72) 0%,rgba(38,28,20,.78) 100%),
+        linear-gradient(to bottom, rgba(8,8,14,.60) 0%, rgba(6,6,12,.78) 100%),
         url("Kantoor afbeelding.png") center 35% / cover no-repeat;
+      background-attachment: scroll, fixed;
       padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden
     }}
     .hero::before{{
       content:'';position:absolute;inset:0;
-      background:radial-gradient(ellipse at 60% 40%,rgba(181,164,138,.12) 0%,transparent 60%);
+      background:radial-gradient(ellipse at 60% 30%,rgba(181,164,138,.08) 0%,transparent 55%);
       pointer-events:none
     }}
     .hero-eyebrow{{
