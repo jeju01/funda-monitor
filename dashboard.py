@@ -110,86 +110,135 @@ def build_dashboard(listings: list[dict]) -> str:
   <title>Vastgoedmonitor | Lammers Beton</title>
   <style>
     *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
-    body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f0ece6;color:#2c2c2c;min-height:100vh}}
+    body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;background:#f5f1ec;color:#2c2c2c;min-height:100vh}}
 
-    header{{background:#1a1a1a;padding:28px 24px 20px;text-align:center}}
-    header h1{{color:#fff;font-size:clamp(18px,4vw,26px);font-weight:700}}
-    header p{{color:#a09080;font-size:12px;margin-top:5px;text-transform:uppercase;letter-spacing:1px}}
-    .accent-bar{{background:#b5a48a;padding:9px 24px;text-align:center;font-size:11px;color:#fff;text-transform:uppercase;letter-spacing:.8px}}
+    /* ── Hero header ── */
+    .hero{{
+      background:linear-gradient(135deg,#1a1a1a 0%,#2e2620 60%,#3a2e25 100%);
+      padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden
+    }}
+    .hero::before{{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 70% 50%,rgba(181,164,138,.15) 0%,transparent 65%);
+      pointer-events:none
+    }}
+    .hero-eyebrow{{
+      display:inline-flex;align-items:center;gap:7px;
+      background:rgba(181,164,138,.18);border:1px solid rgba(181,164,138,.3);
+      border-radius:20px;padding:4px 14px;margin-bottom:18px;
+      font-size:11px;font-weight:600;letter-spacing:1.2px;
+      text-transform:uppercase;color:#c9b99e
+    }}
+    .hero-eyebrow svg{{opacity:.8}}
+    .hero h1{{
+      color:#fff;font-size:clamp(26px,5vw,42px);font-weight:700;
+      letter-spacing:-0.5px;line-height:1.15;margin-bottom:10px
+    }}
+    .hero h1 span{{color:#b5a48a}}
+    .hero-sub{{color:#a09080;font-size:14px;letter-spacing:.3px}}
+    .hero-stats{{
+      display:inline-flex;gap:0;margin-top:28px;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;overflow:hidden
+    }}
+    .hero-stat{{padding:12px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.08)}}
+    .hero-stat:last-child{{border-right:none}}
+    .hero-stat strong{{display:block;font-size:20px;font-weight:700;color:#fff;line-height:1}}
+    .hero-stat span{{font-size:11px;color:#8a7d6e;text-transform:uppercase;letter-spacing:.8px;margin-top:3px;display:block}}
 
-    /* ── Filters ── */
-    .filters{{max-width:1200px;margin:24px auto 0;padding:0 16px;display:flex;flex-direction:column;gap:16px}}
+    /* ── Filter card ── */
+    .filter-card{{
+      max-width:1100px;margin:-20px auto 0;padding:0 20px;position:relative;z-index:10
+    }}
+    .filter-inner{{
+      background:#fff;border-radius:16px;
+      box-shadow:0 8px 40px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);
+      padding:20px 24px 16px
+    }}
     .filter-row{{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}}
-    .filter-group{{display:flex;flex-direction:column;gap:5px;flex:1 1 160px}}
-    .filter-group label{{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#7a6e62}}
+    .filter-row+.filter-row{{margin-top:12px;padding-top:12px;border-top:1px solid #f0ece6}}
+    .filter-group{{display:flex;flex-direction:column;gap:5px;flex:1 1 150px}}
+    .filter-group label{{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#b5a48a}}
     .filter-group select,
     .filter-group input[type=text],
     .filter-group input[type=number]{{
-      padding:9px 12px;border:1.5px solid #d4ccc2;border-radius:8px;
-      font-size:13px;background:#fff;outline:none;transition:border-color .2s;width:100%
+      padding:9px 12px;border:1.5px solid #ede8e2;border-radius:9px;
+      font-size:13px;background:#faf8f5;outline:none;transition:all .2s;width:100%;color:#2c2c2c
     }}
     .filter-group select:focus,
-    .filter-group input:focus{{border-color:#b5a48a}}
+    .filter-group input:focus{{border-color:#b5a48a;background:#fff;box-shadow:0 0 0 3px rgba(181,164,138,.12)}}
 
     /* ── Dual range slider ── */
-    .slider-block{{background:#fff;border:1.5px solid #d4ccc2;border-radius:10px;padding:14px 16px 12px;flex:0 1 380px;min-width:260px}}
-    .slider-block > label{{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#7a6e62;display:block;margin-bottom:10px}}
-    .price-inputs-row{{display:flex;gap:8px;margin-bottom:10px;align-items:center}}
+    .slider-block{{background:#faf8f5;border:1.5px solid #ede8e2;border-radius:10px;padding:12px 14px 10px;flex:0 1 360px;min-width:240px}}
+    .slider-block > label{{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#b5a48a;display:block;margin-bottom:8px}}
+    .price-inputs-row{{display:flex;gap:8px;margin-bottom:8px;align-items:center}}
     .price-inputs-row input[type=number]{{
-      flex:1;padding:7px 10px;border:1.5px solid #d4ccc2;border-radius:7px;
-      font-size:13px;font-weight:600;background:#f9f7f4;outline:none;
-      transition:border-color .2s;-moz-appearance:textfield;min-width:0
+      flex:1;padding:7px 10px;border:1.5px solid #ede8e2;border-radius:7px;
+      font-size:13px;font-weight:600;background:#fff;outline:none;
+      transition:all .2s;-moz-appearance:textfield;min-width:0;color:#2c2c2c
     }}
     .price-inputs-row input[type=number]::-webkit-outer-spin-button,
     .price-inputs-row input[type=number]::-webkit-inner-spin-button{{-webkit-appearance:none}}
-    .price-inputs-row input[type=number]:focus{{border-color:#b5a48a;background:#fff}}
-    .price-inputs-row span{{font-size:12px;color:#aaa;flex-shrink:0}}
-    .range-wrap{{position:relative;height:24px;margin-top:2px}}
+    .price-inputs-row input[type=number]:focus{{border-color:#b5a48a;box-shadow:0 0 0 3px rgba(181,164,138,.12)}}
+    .price-inputs-row span{{font-size:12px;color:#ccc;flex-shrink:0}}
+    .range-wrap{{position:relative;height:22px;margin-top:2px}}
     .range-wrap input[type=range]{{
       position:absolute;width:100%;height:4px;top:50%;transform:translateY(-50%);
       -webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;outline:none
     }}
     .range-wrap input[type=range]::-webkit-slider-thumb{{
-      -webkit-appearance:none;appearance:none;
-      width:18px;height:18px;border-radius:50%;
-      background:#b5a48a;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);
-      pointer-events:all;cursor:pointer;
+      -webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;
+      background:#b5a48a;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.2);
+      pointer-events:all;cursor:pointer;transition:transform .15s
     }}
+    .range-wrap input[type=range]::-webkit-slider-thumb:hover{{transform:scale(1.15)}}
     .range-wrap input[type=range]::-moz-range-thumb{{
-      width:18px;height:18px;border-radius:50%;
-      background:#b5a48a;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);
-      pointer-events:all;cursor:pointer;border:none
+      width:18px;height:18px;border-radius:50%;background:#b5a48a;
+      border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.2);pointer-events:all;cursor:pointer
     }}
-    .range-track{{position:absolute;top:50%;transform:translateY(-50%);width:100%;height:4px;border-radius:2px;background:#d4ccc2;pointer-events:none}}
-    .range-fill{{position:absolute;top:0;height:100%;border-radius:2px;background:#b5a48a}}
+    .range-track{{position:absolute;top:50%;transform:translateY(-50%);width:100%;height:4px;border-radius:2px;background:#e8e0d5;pointer-events:none}}
+    .range-fill{{position:absolute;top:0;height:100%;border-radius:2px;background:linear-gradient(90deg,#c9b89e,#b5a48a)}}
 
     /* ── Radius ── */
-    .radius-toggle{{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;user-select:none;text-transform:none;letter-spacing:0;font-weight:400;color:#2c2c2c}}
-    .radius-toggle input{{accent-color:#b5a48a;width:16px;height:16px;cursor:pointer}}
-    .radius-section{{background:#fff;border:1.5px solid #d4ccc2;border-radius:10px;padding:14px 16px;display:none;flex-direction:column;gap:12px}}
+    .radius-toggle{{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;user-select:none;font-weight:500;color:#5a5040}}
+    .radius-toggle input{{accent-color:#b5a48a;width:15px;height:15px;cursor:pointer}}
+    .radius-section{{background:#faf8f5;border:1.5px solid #ede8e2;border-radius:10px;padding:14px 16px;display:none;flex-direction:column;gap:12px;margin-top:4px}}
     .radius-section.open{{display:flex}}
-    .radius-hint{{font-size:11px;color:#9a8e82;margin-top:2px}}
+    .radius-hint{{font-size:11px;color:#b5a48a;margin-top:2px}}
 
-    .btn-apply{{padding:10px 20px;background:#b5a48a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap}}
-    .btn-apply:hover{{background:#9d8e77}}
-    .btn-clear{{padding:10px 16px;background:transparent;color:#888;border:1.5px solid #ccc;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}}
-    .btn-clear:hover{{background:#eee;color:#333}}
+    .btn-apply{{
+      padding:10px 22px;background:linear-gradient(135deg,#c9b89e,#b5a48a);
+      color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;
+      cursor:pointer;transition:all .2s;white-space:nowrap;
+      box-shadow:0 2px 8px rgba(181,164,138,.4)
+    }}
+    .btn-apply:hover{{transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,164,138,.5)}}
+    .btn-clear{{
+      padding:10px 16px;background:transparent;color:#aaa;
+      border:1.5px solid #e8e0d5;border-radius:9px;font-size:13px;cursor:pointer;transition:all .2s
+    }}
+    .btn-clear:hover{{background:#f5f1ec;color:#666;border-color:#ccc}}
 
-    /* ── Stats ── */
-    .stats{{max-width:1200px;margin:14px auto 0;padding:0 16px;font-size:13px;color:#7a6e62}}
-    .stats strong{{color:#2c2c2c}}
+    /* ── Stats bar ── */
+    .stats-bar{{max-width:1100px;margin:28px auto 0;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}}
+    .stats-bar p{{font-size:13px;color:#8a7d6e}}
+    .stats-bar strong{{color:#2c2c2c;font-weight:600}}
 
     /* ── Grid ── */
-    .grid{{max-width:1200px;margin:18px auto 48px;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}}
+    .grid{{max-width:1100px;margin:14px auto 56px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}}
 
     /* ── Card ── */
-    .card{{background:#e8e0d5;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}}
-    .card:hover{{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.12)}}
+    .card{{
+      background:#fff;border-radius:14px;overflow:hidden;
+      box-shadow:0 2px 12px rgba(0,0,0,.06);
+      display:flex;flex-direction:column;transition:transform .2s,box-shadow .25s
+    }}
+    .card:hover{{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.11)}}
     .card.hidden{{display:none}}
-    .card-img{{display:block;overflow:hidden;height:200px;background:#ccc8c0}}
-    .card-img img{{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}}
-    .card:hover .card-img img{{transform:scale(1.04)}}
-    .no-photo{{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8a7d6e;font-size:13px}}
+    .card-img{{display:block;overflow:hidden;height:200px;background:#e8e0d5}}
+    .card-img img{{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}}
+    .card:hover .card-img img{{transform:scale(1.06)}}
+    .no-photo{{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#b5a48a;font-size:13px;letter-spacing:.3px}}
     .card-body{{padding:14px;display:flex;flex-direction:column;gap:5px;flex:1}}
     .card-tags{{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:3px}}
     .source-badge{{font-size:10px;padding:2px 8px;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}}
@@ -208,98 +257,125 @@ def build_dashboard(listings: list[dict]) -> str:
     .card-distance{{font-size:11px;color:#b5a48a;font-weight:600;min-height:14px}}
     .btn-funda{{display:block;margin-top:10px;padding:9px 16px;background:#b5a48a;color:#fff;text-decoration:none;font-size:13px;font-weight:600;border-radius:6px;transition:background .2s;text-align:center}}
     .btn-funda:hover{{background:#9d8e77}}
-    .empty,.no-results{{grid-column:1/-1;text-align:center;padding:60px 20px;color:#7a6e62;font-size:16px}}
-    footer{{background:#1a1a1a;color:#666;text-align:center;padding:18px;font-size:11px}}
+    .empty,.no-results{{grid-column:1/-1;text-align:center;padding:60px 20px;color:#9a8e82;font-size:15px}}
+    footer{{
+      background:linear-gradient(135deg,#1a1a1a,#2e2620);
+      color:#5a5040;text-align:center;padding:24px;font-size:11px;
+      letter-spacing:.5px
+    }}
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Vastgoedmonitor</h1>
-  <p>Lammers Beton &nbsp;·&nbsp; Bijgewerkt op {today}</p>
-</header>
-<div class="accent-bar">Nederland &amp; België &nbsp;·&nbsp; Funda · Immoweb</div>
-
-<div class="filters">
-
-  <!-- Rij 1: zoekbalk + bron + land + sortering -->
-  <div class="filter-row">
-    <div class="filter-group" style="flex:2 1 240px">
-      <label>Zoek op adres of stad</label>
-      <input type="text" id="search" placeholder="bijv. Knokke, Nieuwegracht…" autocomplete="off">
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Vastgoedmonitor
+  </div>
+  <h1>Lammers <span>Beton</span></h1>
+  <p class="hero-sub">Nederland &amp; België · Funda · Immoweb · Bijgewerkt {today}</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <strong id="visible-count">{count}</strong>
+      <span>Zichtbaar</span>
     </div>
-    <div class="filter-group">
-      <label>Bron</label>
-      <select id="filter-source">{_source_options(listings)}</select>
+    <div class="hero-stat">
+      <strong>{count}</strong>
+      <span>Totaal</span>
     </div>
-    <div class="filter-group">
-      <label>Land</label>
-      <select id="filter-country">{_country_options(listings)}</select>
+    <div class="hero-stat">
+      <strong>{sum(1 for l in listings if l.get('country') == 'NL')}</strong>
+      <span>Nederland</span>
     </div>
-    <div class="filter-group">
-      <label>Sortering</label>
-      <select id="sort">
-        <option value="default">Standaard</option>
-        <option value="price-asc">Prijs laag → hoog</option>
-        <option value="price-desc">Prijs hoog → laag</option>
-        <option value="dist-asc">Afstand dichtbij → ver</option>
-      </select>
+    <div class="hero-stat">
+      <strong>{sum(1 for l in listings if l.get('country') == 'BE')}</strong>
+      <span>België</span>
     </div>
   </div>
+</div>
 
-  <!-- Rij 2: prijsschuifbalk -->
-  <div class="filter-row">
-    <div class="slider-block">
-      <label>Prijsrange</label>
-      <div class="price-inputs-row">
-        <input type="number" id="input-min" value="{slider_min}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Min">
-        <span>—</span>
-        <input type="number" id="input-max" value="{slider_max}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Max">
-      </div>
-      <div class="range-wrap">
-        <div class="range-track"><div class="range-fill" id="range-fill"></div></div>
-        <input type="range" id="slider-min" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_min}">
-        <input type="range" id="slider-max" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_max}">
-      </div>
-    </div>
+<!-- Filter card -->
+<div class="filter-card">
+  <div class="filter-inner">
 
-    <!-- Straal toggle + knoppen -->
-    <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto;gap:8px">
-      <label>&nbsp;</label>
-      <label class="radius-toggle">
-        <input type="checkbox" id="radius-toggle"> Straalfilter
-      </label>
-    </div>
-    <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
-      <label>&nbsp;</label>
-      <button class="btn-clear" id="btn-clear">Wis alles</button>
-    </div>
-  </div>
-
-  <!-- Straal sectie -->
-  <div class="radius-section" id="radius-section">
+    <!-- Rij 1 -->
     <div class="filter-row">
-      <div class="filter-group" style="flex:3 1 280px">
-        <label>Middelpunt adres</label>
-        <input type="text" id="center-address" value="{CENTER_ADDRESS}">
-        <span class="radius-hint">Wordt opgezocht via OpenStreetMap · druk Enter of klik Toepassen</span>
+      <div class="filter-group" style="flex:2 1 220px">
+        <label>Zoeken</label>
+        <input type="text" id="search" placeholder="Adres, stad of regio…" autocomplete="off">
       </div>
-      <div class="filter-group" style="flex:0 1 120px">
-        <label>Straal (km)</label>
-        <input type="number" id="radius-km" value="{DEFAULT_RADIUS_KM}" min="1" max="500" step="5">
+      <div class="filter-group">
+        <label>Bron</label>
+        <select id="filter-source">{_source_options(listings)}</select>
+      </div>
+      <div class="filter-group">
+        <label>Land</label>
+        <select id="filter-country">{_country_options(listings)}</select>
+      </div>
+      <div class="filter-group">
+        <label>Sortering</label>
+        <select id="sort">
+          <option value="default">Standaard</option>
+          <option value="price-asc">Prijs laag → hoog</option>
+          <option value="price-desc">Prijs hoog → laag</option>
+          <option value="dist-asc">Afstand dichtbij → ver</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Rij 2 -->
+    <div class="filter-row">
+      <div class="slider-block">
+        <label>Prijsrange</label>
+        <div class="price-inputs-row">
+          <input type="number" id="input-min" value="{slider_min}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Min">
+          <span>—</span>
+          <input type="number" id="input-max" value="{slider_max}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Max">
+        </div>
+        <div class="range-wrap">
+          <div class="range-track"><div class="range-fill" id="range-fill"></div></div>
+          <input type="range" id="slider-min" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_min}">
+          <input type="range" id="slider-max" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_max}">
+        </div>
       </div>
       <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
         <label>&nbsp;</label>
-        <button class="btn-apply" id="btn-apply">Toepassen</button>
+        <label class="radius-toggle">
+          <input type="checkbox" id="radius-toggle"> Straalfilter
+        </label>
+      </div>
+      <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
+        <label>&nbsp;</label>
+        <button class="btn-clear" id="btn-clear">Wis filters</button>
       </div>
     </div>
-    <div id="radius-status" style="font-size:12px;color:#b5a48a"></div>
-  </div>
 
+    <!-- Straal sectie -->
+    <div class="radius-section" id="radius-section">
+      <div class="filter-row">
+        <div class="filter-group" style="flex:3 1 260px">
+          <label>Middelpunt</label>
+          <input type="text" id="center-address" value="{CENTER_ADDRESS}">
+          <span class="radius-hint">Opgezocht via OpenStreetMap — druk Enter of klik Toepassen</span>
+        </div>
+        <div class="filter-group" style="flex:0 1 110px">
+          <label>Straal (km)</label>
+          <input type="number" id="radius-km" value="{DEFAULT_RADIUS_KM}" min="1" max="500" step="5">
+        </div>
+        <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
+          <label>&nbsp;</label>
+          <button class="btn-apply" id="btn-apply">Toepassen</button>
+        </div>
+      </div>
+      <div id="radius-status" style="font-size:12px;color:#b5a48a"></div>
+    </div>
+
+  </div>
 </div>
 
-<div class="stats">
-  <strong id="visible-count">{count}</strong> van <strong>{count}</strong> objecten zichtbaar
+<div class="stats-bar">
+  <p><strong id="visible-count2">{count}</strong> van <strong>{count}</strong> objecten zichtbaar</p>
 </div>
 
 <main class="grid" id="grid">
@@ -481,6 +557,8 @@ def build_dashboard(listings: list[dict]) -> str:
   function updateStats() {{
     const n = cards.filter(c=>!c.classList.contains('hidden')).length;
     statsEl.textContent = n;
+    const s2 = document.getElementById('visible-count2');
+    if (s2) s2.textContent = n;
     let nr = grid.querySelector('.no-results');
     if (n===0 && cards.length>0) {{
       if (!nr) {{ nr=document.createElement('p'); nr.className='no-results'; nr.textContent='Geen objecten gevonden.'; grid.appendChild(nr); }}
