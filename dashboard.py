@@ -470,14 +470,16 @@ def build_dashboard(listings: list[dict]) -> str:
   }}
 
   function onPolygonCreated(latlngs) {{
-    // Bouw lookup lat/lon per listing ID
-    const geoById = {{}};
-    GEO_LISTINGS.forEach(l => {{ if (l.lat && l.lon) geoById[l.id] = {{lat: l.lat, lon: l.lon}}; }});
-
     inPolygonIds = new Set();
     GEO_LISTINGS.forEach(l => {{
-      if (!l.lat || !l.lon) return;
-      if (pointInPolygon(l.lat, l.lon, latlngs)) inPolygonIds.add(String(l.id));
+      if (l.lat && l.lon && pointInPolygon(l.lat, l.lon, latlngs))
+        inPolygonIds.add(String(l.id));
+    }});
+
+    // Zet data-attribuut direct op elke card zodat filter werkt ongeacht tab
+    cards.forEach(card => {{
+      const inPoly = inPolygonIds.has(String(card.dataset.id));
+      card.setAttribute('data-in-polygon', inPoly ? '1' : '0');
     }});
 
     const count = inPolygonIds.size;
@@ -489,12 +491,18 @@ def build_dashboard(listings: list[dict]) -> str:
         ? `${{count}} pand${{count === 1 ? '' : 'en'}} gevonden — zie Algemeen tabblad.`
         : 'Geen panden in dit gebied. Teken een groter gebied.';
 
-    // Schakel terug naar Algemeen en pas filter toe
-    switchTab('algemeen');
+    // Schakel naar Algemeen en pas filter toe
+    activeTab = 'algemeen';
+    document.getElementById('panel-algemeen').style.display = '';
+    document.getElementById('panel-gebied').style.display   = 'none';
+    document.getElementById('tab-algemeen').classList.add('active');
+    document.getElementById('tab-gebied').classList.remove('active');
+    applyFilters();
   }}
 
   function clearPolygonFilter() {{
     inPolygonIds = null;
+    cards.forEach(card => card.removeAttribute('data-in-polygon'));
     if (drawnLayer) drawnLayer.clearLayers();
     document.getElementById('map-result-pill').classList.remove('visible');
     document.getElementById('btn-draw-clear').classList.remove('visible');
@@ -702,7 +710,7 @@ def build_dashboard(listings: list[dict]) -> str:
       const mSearch  = !q || addr.includes(q) || city.includes(q);
       const mSrc     = !src   || csrc   === src;
       const mCntry   = !cntry || ccntry === cntry;
-      const mPolygon = !inPolygonIds || inPolygonIds.has(String(card.dataset.id));
+      const mPolygon = !inPolygonIds || card.getAttribute('data-in-polygon') === '1';
 
       let mDist = true;
       let distKm = null;
