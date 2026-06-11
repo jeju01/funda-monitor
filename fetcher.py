@@ -107,11 +107,11 @@ def _fetch_region(region: str, min_price: int) -> list[dict]:
     results: list[dict] = []
     try:
         with Funda() as client:
-            for raw_listing in client.iter_search(
-                region,
-                min_price=min_price,
-                max_pages=PAGES_PER_QUERY,
-            ):
+            # min_price=0 sturen breekt de Funda API — alleen meesturen als > 0
+            kwargs: dict = {"max_pages": PAGES_PER_QUERY}
+            if min_price and min_price > 0:
+                kwargs["min_price"] = min_price
+            for raw_listing in client.iter_search(region, **kwargs):
                 normalized = _listing_to_dict(raw_listing, region)
                 if normalized:
                     geocode_listing(normalized)
