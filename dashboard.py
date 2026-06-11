@@ -455,9 +455,9 @@ def build_dashboard(listings: list[dict]) -> str:
   // ── Kaart ──
   const GEO_LISTINGS = {listings_json};
   let map = null, drawnLayer = null, currentDrawHandler = null;
-  let inPolygonIds = null; // null = geen filter, anders Set van listing IDs
+  let activePolygon = null; // Leaflet LatLng array, null = geen filter
 
-  // Ray casting point-in-polygon (lon=x, lat=y voor correcte geografische oriëntatie)
+  // Ray casting point-in-polygon
   function pointInPolygon(lat, lon, poly) {{
     let inside = false;
     for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {{
@@ -470,19 +470,16 @@ def build_dashboard(listings: list[dict]) -> str:
   }}
 
   function onPolygonCreated(latlngs) {{
-    inPolygonIds = new Set();
-    GEO_LISTINGS.forEach(l => {{
-      if (l.lat && l.lon && pointInPolygon(l.lat, l.lon, latlngs))
-        inPolygonIds.add(String(l.id));
-    }});
+    activePolygon = latlngs;
 
-    // Zet data-attribuut direct op elke card zodat filter werkt ongeacht tab
+    // Tel hoeveel cards binnen het gebied liggen
+    let count = 0;
     cards.forEach(card => {{
-      const inPoly = inPolygonIds.has(String(card.dataset.id));
-      card.setAttribute('data-in-polygon', inPoly ? '1' : '0');
+      const clat = parseFloat(card.dataset.lat);
+      const clon = parseFloat(card.dataset.lon);
+      if (!isNaN(clat) && !isNaN(clon) && pointInPolygon(clat, clon, latlngs)) count++;
     }});
 
-    const count = inPolygonIds.size;
     document.getElementById('map-result-count').textContent = count;
     document.getElementById('map-result-pill').classList.add('visible');
     document.getElementById('btn-draw-clear').classList.add('visible');
@@ -491,19 +488,17 @@ def build_dashboard(listings: list[dict]) -> str:
         ? `${{count}} pand${{count === 1 ? '' : 'en'}} gevonden — zie Algemeen tabblad.`
         : 'Geen panden in dit gebied. Teken een groter gebied.';
 
-    // Schakel naar Algemeen en pas filter toe
+    // Wissel naar Algemeen en filter
     activeTab = 'algemeen';
     document.getElementById('panel-algemeen').style.display = '';
     document.getElementById('panel-gebied').style.display   = 'none';
     document.getElementById('tab-algemeen').classList.add('active');
     document.getElementById('tab-gebied').classList.remove('active');
     applyFilters();
-    updateStats(); // expliciet aanroepen zodat teller zeker klopt
   }}
 
   function clearPolygonFilter() {{
-    inPolygonIds = null;
-    cards.forEach(card => card.removeAttribute('data-in-polygon'));
+    activePolygon = null;
     if (drawnLayer) drawnLayer.clearLayers();
     document.getElementById('map-result-pill').classList.remove('visible');
     document.getElementById('btn-draw-clear').classList.remove('visible');
@@ -711,7 +706,14 @@ def build_dashboard(listings: list[dict]) -> str:
       const mSearch  = !q || addr.includes(q) || city.includes(q);
       const mSrc     = !src   || csrc   === src;
       const mCntry   = !cntry || ccntry === cntry;
-      const mPolygon = !inPolygonIds || card.getAttribute('data-in-polygon') === '1';
+      let mPolygon = true;
+      if (activePolygon) {{
+        if (!isNaN(clat) && !isNaN(clon)) {{
+          mPolygon = pointInPolygon(clat, clon, activePolygon);
+        }} else {{
+          mPolygon = false; // geen coördinaten → buiten gebied
+        }}
+      }}
 
       let mDist = true;
       let distKm = null;
@@ -767,7 +769,7 @@ def build_dashboard(listings: list[dict]) -> str:
     sMin.value=SLIDER_MIN_VAL; sMax.value=SLIDER_MAX_VAL;
     inputMin.value=SLIDER_MIN_VAL; inputMax.value=SLIDER_MAX_VAL;
     centerLat=null; centerLon=null;
-    inPolygonIds=null;
+    activePolygon=null;
     cards.forEach(c=>{{
       c.classList.remove('hidden');
       c.removeAttribute('data-in-polygon');
