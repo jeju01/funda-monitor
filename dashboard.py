@@ -428,8 +428,6 @@ def build_dashboard(listings: list[dict]) -> str:
 (function(){{
   const SLIDER_MIN_VAL = {slider_min};
   const SLIDER_MAX_VAL = {slider_max};
-  const LISTINGS_GEO   = {listings_json};
-
   const grid      = document.getElementById('grid');
   const cards     = Array.from(grid.querySelectorAll('.card'));
   const searchEl  = document.getElementById('search');
@@ -441,13 +439,7 @@ def build_dashboard(listings: list[dict]) -> str:
   const inputMin  = document.getElementById('input-min');
   const inputMax  = document.getElementById('input-max');
   const fill      = document.getElementById('range-fill');
-  const radToggle = document.getElementById('radius-toggle');
-  const radSection= document.getElementById('radius-section');
-  const centerEl  = document.getElementById('center-address');
-  const radiusEl  = document.getElementById('radius-km');
-  const radStatus = document.getElementById('radius-status');
   const statsEl   = document.getElementById('visible-count');
-  const applyBtn  = document.getElementById('btn-apply');
   const clearBtn  = document.getElementById('btn-clear');
 
   let centerLat = null, centerLon = null;
@@ -628,6 +620,8 @@ def build_dashboard(listings: list[dict]) -> str:
 
   // ── Geocodeer middelpunt ──
   async function geocodeCenter() {{
+    const {{centerEl, radStatus}} = getRadEls();
+    if (!centerEl) return;
     radStatus.textContent = 'Adres opzoeken…';
     const url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(centerEl.value) + '&format=json&limit=1';
     try {{
@@ -643,25 +637,25 @@ def build_dashboard(listings: list[dict]) -> str:
     }} catch(e) {{ radStatus.textContent = '✗ Fout bij opzoeken'; }}
   }}
 
-  // ── Straal toggle ──
-  radToggle.addEventListener('change', () => {{
-    radSection.classList.toggle('open', radToggle.checked);
-    if (!radToggle.checked) {{ centerLat = null; centerLon = null; applyFilters(); }}
-  }});
-  applyBtn.addEventListener('click', geocodeCenter);
-  centerEl.addEventListener('keydown', e => {{ if(e.key==='Enter') geocodeCenter(); }});
-  radiusEl.addEventListener('change', () => {{ if(centerLat) applyFilters(); }});
+  // ── Straalfilter (Gebied-tab) ──
+  // Elementen bestaan alleen als de Gebied-tab actief is — haal ze op bij gebruik
+  function getRadEls() {{
+    return {{
+      centerEl: document.getElementById('center-address'),
+      radiusEl: document.getElementById('radius-km'),
+      applyBtn: document.getElementById('btn-apply'),
+      radStatus: document.getElementById('radius-status'),
+    }};
+  }}
 
-  document.getElementById('btn-clear-gebied').addEventListener('click', () => {{
-    centerLat = null; centerLon = null;
-    document.getElementById('radius-status').textContent = '';
-    cards.forEach(c => {{
-      c.classList.remove('hidden');
-      const d = c.querySelector('.card-distance');
-      if (d) d.textContent = '';
-    }});
-    cards.forEach(c => grid.appendChild(c));
-    updateStats();
+  document.addEventListener('click', e => {{
+    if (e.target && e.target.id === 'btn-apply') geocodeCenter();
+  }});
+  document.addEventListener('keydown', e => {{
+    if (e.key === 'Enter' && document.activeElement?.id === 'center-address') geocodeCenter();
+  }});
+  document.addEventListener('change', e => {{
+    if (e.target && e.target.id === 'radius-km' && centerLat) applyFilters();
   }});
 
   // ── Filters toepassen ──
@@ -671,8 +665,9 @@ def build_dashboard(listings: list[dict]) -> str:
     const cntry  = cntryEl.value;
     const pLo    = parseInt(sMin.value) || SLIDER_MIN_VAL;
     const pHi    = parseInt(sMax.value) || SLIDER_MAX_VAL;
-    const useRad = activeTab === 'gebied' && centerLat !== null;
-    const radKm  = parseFloat(radiusEl.value) || 999;
+    const useRad  = activeTab === 'gebied' && centerLat !== null;
+    const radKmEl = document.getElementById('radius-km');
+    const radKm   = radKmEl ? (parseFloat(radKmEl.value) || 999) : 999;
 
     cards.forEach(card => {{
       const addr   = (card.querySelector('.card-address')?.textContent||'').toLowerCase();
