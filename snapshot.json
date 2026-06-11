@@ -3,6 +3,9 @@
     "id": "44488721",
     "address": "Hoola van Nootenstraat 278",
     "city": "Utrecht",
+    "postcode": "3521HB",
+    "country": "NL",
+    "source": "Funda",
     "price": 2695000,
     "price_formatted": "€ 2.695.000",
     "surface_m2": 234,
@@ -11,12 +14,17 @@
     "thumbnail_url": "https://cloud.funda.nl/valentina_media/230/107/803.jpg",
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/appartement-hoola-van-nootenstraat-278/44488721/",
     "region": "utrecht",
-    "search_type": "koop"
+    "search_type": "koop",
+    "lat": null,
+    "lon": null
   },
   "43332541": {
     "id": "43332541",
     "address": "Nieuwegracht 67",
     "city": "Utrecht",
+    "postcode": "3512LG",
+    "country": "NL",
+    "source": "Funda",
     "price": 4700000,
     "price_formatted": "€ 4.700.000",
     "surface_m2": 672,
@@ -25,12 +33,17 @@
     "thumbnail_url": "https://cloud.funda.nl/valentina_media/228/240/230.jpg",
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/huis-nieuwegracht-67/43332541/",
     "region": "utrecht",
-    "search_type": "koop"
+    "search_type": "koop",
+    "lat": null,
+    "lon": null
   },
   "43774096": {
     "id": "43774096",
     "address": "Nieuwegracht 19-G",
     "city": "Utrecht",
+    "postcode": "3512LC",
+    "country": "NL",
+    "source": "Funda",
     "price": 2750000,
     "price_formatted": "€ 2.750.000",
     "surface_m2": 372,
@@ -39,6 +52,8 @@
     "thumbnail_url": "https://cloud.funda.nl/valentina_media/199/363/668.jpg",
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/appartement-nieuwegracht-19-g/43774096/",
     "region": "utrecht",
-    "search_type": "koop"
+    "search_type": "koop",
+    "lat": null,
+    "lon": null
   }
 }
