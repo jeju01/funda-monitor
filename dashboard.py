@@ -88,7 +88,7 @@ def build_dashboard(listings: list[dict]) -> str:
         '<p class="empty">Geen objecten in de huidige snapshot.</p>')
 
     prices = [l.get("price") or 0 for l in listings]
-    slider_min = 0
+    slider_min = 0  # altijd vanaf €0, gebruiker filtert zelf via schuifbalk
     slider_max = max(prices, default=20_000_000)
     slider_max = ((slider_max // 500_000) + 1) * 500_000
 

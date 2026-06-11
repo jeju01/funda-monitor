@@ -2,7 +2,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).parent
 
-MIN_PRICE = 2_500_000
+MIN_PRICE = 0
 
 # Middelpunt voor de straalzoekopdracht (aanpasbaar)
 CENTER_ADDRESS = "Trancheeweg 18, 6002 ST Weert, NL"

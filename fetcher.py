@@ -45,9 +45,7 @@ def _listing_to_dict(listing, region: str) -> Optional[dict]:
 
     price_amount: Optional[int] = listing.price.amount if listing.price else None
 
-    # Guard against listings that slip past the server-side price filter
-    if price_amount is not None and price_amount < MIN_PRICE:
-        return None
+    # Geen harde prijsgrens — filteren gebeurt via de schuifbalk op de website
 
     address_title = listing.title or "Adres onbekend"
     city = listing.city or ""

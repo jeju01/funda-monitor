@@ -21,6 +21,22 @@ SEARCH_URL = (
 MAX_PAGES = 5
 
 
+def _dedup_text(text: str) -> str:
+    """Verwijder herhaalde zinsdelen, bijv. 'prijs op aanvraag prijs op aanvraag' → 'prijs op aanvraag'."""
+    text = " ".join(text.split())  # normaliseer witruimte
+    half = len(text) // 2
+    # Check of de eerste helft exact herhaald wordt
+    if len(text) > 10 and text[:half].strip() == text[half:].strip():
+        return text[:half].strip()
+    # Check op zin-niveau: splits op bekende scheidingstekens en dedupliceer
+    parts = [p.strip() for p in re.split(r"[\n\r]+", text) if p.strip()]
+    seen: list[str] = []
+    for p in parts:
+        if p.lower() not in [s.lower() for s in seen]:
+            seen.append(p)
+    return " ".join(seen)
+
+
 def _parse_price(text: str) -> tuple[Optional[int], str]:
     """
     Geeft (getal, weergave_tekst) terug.
@@ -76,12 +92,11 @@ def _extract_card(card) -> Optional[dict]:
         if not price_int:
             price_el = card.locator("[class*=card--result__price]").first
             if price_el.count():
-                visible_text = price_el.inner_text().strip()
+                visible_text = _dedup_text(price_el.inner_text())
                 price_int, price_display = _parse_price(visible_text)
                 if not price_display:
                     price_display = visible_text
-        if price_int and price_int < MIN_PRICE:
-            return None
+        # Geen harde prijsgrens — filteren gebeurt via de schuifbalk op de website
 
         # Stad / postcode — formaat: "8300 Knokke-Heist"
         locality_el = card.locator("[class*=information--locality]").first
