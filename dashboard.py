@@ -218,6 +218,24 @@ def build_dashboard(listings: list[dict]) -> str:
       border:1.5px solid #e8e0d5;border-radius:9px;font-size:13px;cursor:pointer;transition:all .2s
     }}
     .btn-clear:hover{{background:#f5f1ec;color:#666;border-color:#ccc}}
+    .btn-clear-gebied{{
+      padding:10px 16px;background:transparent;color:#aaa;
+      border:1.5px solid #e8e0d5;border-radius:9px;font-size:13px;cursor:pointer;transition:all .2s
+    }}
+    .btn-clear-gebied:hover{{background:#f5f1ec;color:#666;border-color:#ccc}}
+
+    /* ── Tab knoppen ── */
+    .hero-tabs{{display:flex;gap:10px;margin-top:28px;justify-content:center}}
+    .tab-btn{{
+      padding:11px 32px;border-radius:50px;font-size:14px;font-weight:600;
+      cursor:pointer;transition:all .2s;border:2px solid rgba(181,164,138,.4);
+      background:rgba(255,255,255,.07);color:#c9b99e;letter-spacing:.3px
+    }}
+    .tab-btn:hover{{background:rgba(255,255,255,.12);border-color:rgba(181,164,138,.7)}}
+    .tab-btn.active{{
+      background:#b5a48a;border-color:#b5a48a;color:#fff;
+      box-shadow:0 4px 16px rgba(181,164,138,.45)
+    }}
 
     /* ── Stats bar ── */
     .stats-bar{{max-width:1100px;margin:28px auto 0;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}}
@@ -275,23 +293,9 @@ def build_dashboard(listings: list[dict]) -> str:
   </div>
   <h1>Lammers <span>Beton</span></h1>
   <p class="hero-sub">Nederland &amp; België · Funda · Immoweb · Bijgewerkt {today}</p>
-  <div class="hero-stats">
-    <div class="hero-stat">
-      <strong id="visible-count">{count}</strong>
-      <span>Zichtbaar</span>
-    </div>
-    <div class="hero-stat">
-      <strong>{count}</strong>
-      <span>Totaal</span>
-    </div>
-    <div class="hero-stat">
-      <strong>{sum(1 for l in listings if l.get('country') == 'NL')}</strong>
-      <span>Nederland</span>
-    </div>
-    <div class="hero-stat">
-      <strong>{sum(1 for l in listings if l.get('country') == 'BE')}</strong>
-      <span>België</span>
-    </div>
+  <div class="hero-tabs">
+    <button class="tab-btn active" id="tab-algemeen" onclick="switchTab('algemeen')">Algemeen</button>
+    <button class="tab-btn" id="tab-gebied" onclick="switchTab('gebied')">Gebied</button>
   </div>
 </div>
 
@@ -299,76 +303,74 @@ def build_dashboard(listings: list[dict]) -> str:
 <div class="filter-card">
   <div class="filter-inner">
 
-    <!-- Rij 1 -->
-    <div class="filter-row">
-      <div class="filter-group" style="flex:2 1 220px">
-        <label>Zoeken</label>
-        <input type="text" id="search" placeholder="Adres, stad of regio…" autocomplete="off">
-      </div>
-      <div class="filter-group">
-        <label>Bron</label>
-        <select id="filter-source">{_source_options(listings)}</select>
-      </div>
-      <div class="filter-group">
-        <label>Land</label>
-        <select id="filter-country">{_country_options(listings)}</select>
-      </div>
-      <div class="filter-group">
-        <label>Sortering</label>
-        <select id="sort">
-          <option value="default">Standaard</option>
-          <option value="price-asc">Prijs laag → hoog</option>
-          <option value="price-desc">Prijs hoog → laag</option>
-          <option value="dist-asc">Afstand dichtbij → ver</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Rij 2 -->
-    <div class="filter-row">
-      <div class="slider-block">
-        <label>Prijsrange</label>
-        <div class="price-inputs-row">
-          <input type="number" id="input-min" value="{slider_min}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Min">
-          <span>—</span>
-          <input type="number" id="input-max" value="{slider_max}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Max">
-        </div>
-        <div class="range-wrap">
-          <div class="range-track"><div class="range-fill" id="range-fill"></div></div>
-          <input type="range" id="slider-min" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_min}">
-          <input type="range" id="slider-max" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_max}">
-        </div>
-      </div>
-      <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
-        <label>&nbsp;</label>
-        <label class="radius-toggle">
-          <input type="checkbox" id="radius-toggle"> Straalfilter
-        </label>
-      </div>
-      <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
-        <label>&nbsp;</label>
-        <button class="btn-clear" id="btn-clear">Wis filters</button>
-      </div>
-    </div>
-
-    <!-- Straal sectie -->
-    <div class="radius-section" id="radius-section">
+    <!-- ALGEMEEN filters -->
+    <div id="panel-algemeen">
       <div class="filter-row">
-        <div class="filter-group" style="flex:3 1 260px">
-          <label>Middelpunt</label>
-          <input type="text" id="center-address" value="{CENTER_ADDRESS}">
-          <span class="radius-hint">Opgezocht via OpenStreetMap — druk Enter of klik Toepassen</span>
+        <div class="filter-group" style="flex:2 1 220px">
+          <label>Zoeken</label>
+          <input type="text" id="search" placeholder="Adres, stad of regio…" autocomplete="off">
         </div>
-        <div class="filter-group" style="flex:0 1 110px">
-          <label>Straal (km)</label>
-          <input type="number" id="radius-km" value="{DEFAULT_RADIUS_KM}" min="1" max="500" step="5">
+        <div class="filter-group">
+          <label>Bron</label>
+          <select id="filter-source">{_source_options(listings)}</select>
+        </div>
+        <div class="filter-group">
+          <label>Land</label>
+          <select id="filter-country">{_country_options(listings)}</select>
+        </div>
+        <div class="filter-group">
+          <label>Sortering</label>
+          <select id="sort">
+            <option value="default">Standaard</option>
+            <option value="price-asc">Prijs laag → hoog</option>
+            <option value="price-desc">Prijs hoog → laag</option>
+            <option value="dist-asc">Afstand dichtbij → ver</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="slider-block">
+          <label>Prijsrange</label>
+          <div class="price-inputs-row">
+            <input type="number" id="input-min" value="{slider_min}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Min">
+            <span>—</span>
+            <input type="number" id="input-max" value="{slider_max}" step="50000" min="{slider_min}" max="{slider_max}" placeholder="Max">
+          </div>
+          <div class="range-wrap">
+            <div class="range-track"><div class="range-fill" id="range-fill"></div></div>
+            <input type="range" id="slider-min" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_min}">
+            <input type="range" id="slider-max" min="{slider_min}" max="{slider_max}" step="50000" value="{slider_max}">
+          </div>
         </div>
         <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
           <label>&nbsp;</label>
-          <button class="btn-apply" id="btn-apply">Toepassen</button>
+          <button class="btn-clear" id="btn-clear">Wis filters</button>
         </div>
       </div>
-      <div id="radius-status" style="font-size:12px;color:#b5a48a"></div>
+    </div>
+
+    <!-- GEBIED filters -->
+    <div id="panel-gebied" style="display:none">
+      <div class="filter-row">
+        <div class="filter-group" style="flex:3 1 260px">
+          <label>Middelpunt adres</label>
+          <input type="text" id="center-address" value="{CENTER_ADDRESS}">
+          <span class="radius-hint">Opgezocht via OpenStreetMap — druk Enter of klik Toepassen</span>
+        </div>
+        <div class="filter-group" style="flex:0 1 120px">
+          <label>Straal (km)</label>
+          <input type="number" id="radius-km" value="{DEFAULT_RADIUS_KM}" min="1" max="500" step="5">
+        </div>
+        <div class="filter-group" style="flex:0 1 auto;justify-content:flex-end">
+          <label>&nbsp;</label>
+          <button class="btn-apply" id="btn-apply">Toepassen</button>
+        </div>
+        <div class="filter-group" style="justify-content:flex-end;flex:0 1 auto">
+          <label>&nbsp;</label>
+          <button class="btn-clear-gebied" id="btn-clear-gebied">Wis</button>
+        </div>
+      </div>
+      <div id="radius-status" style="font-size:12px;color:#b5a48a;margin-top:4px"></div>
     </div>
 
   </div>
@@ -411,6 +413,19 @@ def build_dashboard(listings: list[dict]) -> str:
   const clearBtn  = document.getElementById('btn-clear');
 
   let centerLat = null, centerLon = null;
+  let activeTab = 'algemeen';
+
+  // ── Tab wisselen ──
+  window.switchTab = function(tab) {{
+    activeTab = tab;
+    document.getElementById('panel-algemeen').style.display = tab === 'algemeen' ? '' : 'none';
+    document.getElementById('panel-gebied').style.display   = tab === 'gebied'   ? '' : 'none';
+    document.getElementById('tab-algemeen').classList.toggle('active', tab === 'algemeen');
+    document.getElementById('tab-gebied').classList.toggle('active', tab === 'gebied');
+    // Gebied: forceer straalfilter aan/uit
+    if (tab === 'algemeen') {{ centerLat = null; centerLon = null; }}
+    applyFilters();
+  }};
 
   // ── Prijsopmaak ──
   function fmtPrice(v) {{
@@ -493,6 +508,18 @@ def build_dashboard(listings: list[dict]) -> str:
   centerEl.addEventListener('keydown', e => {{ if(e.key==='Enter') geocodeCenter(); }});
   radiusEl.addEventListener('change', () => {{ if(centerLat) applyFilters(); }});
 
+  document.getElementById('btn-clear-gebied').addEventListener('click', () => {{
+    centerLat = null; centerLon = null;
+    document.getElementById('radius-status').textContent = '';
+    cards.forEach(c => {{
+      c.classList.remove('hidden');
+      const d = c.querySelector('.card-distance');
+      if (d) d.textContent = '';
+    }});
+    cards.forEach(c => grid.appendChild(c));
+    updateStats();
+  }});
+
   // ── Filters toepassen ──
   function applyFilters() {{
     const q      = searchEl.value.toLowerCase().trim();
@@ -500,7 +527,7 @@ def build_dashboard(listings: list[dict]) -> str:
     const cntry  = cntryEl.value;
     const pLo    = parseInt(sMin.value) || SLIDER_MIN_VAL;
     const pHi    = parseInt(sMax.value) || SLIDER_MAX_VAL;
-    const useRad = radToggle.checked && centerLat !== null;
+    const useRad = activeTab === 'gebied' && centerLat !== null;
     const radKm  = parseFloat(radiusEl.value) || 999;
 
     cards.forEach(card => {{
