@@ -119,17 +119,19 @@ def build_dashboard(listings: list[dict]) -> str:
 
     /* ── Hero header ── */
     .hero{{
-      background:
-        linear-gradient(to bottom, rgba(8,8,14,.60) 0%, rgba(6,6,12,.78) 100%),
-        url("Kantoor afbeelding.png") center 35% / cover no-repeat;
-      background-attachment: scroll, fixed;
-      padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden
+      padding:48px 24px 40px;text-align:center;
+      position:relative;overflow:hidden;background:#08080e
     }}
-    .hero::before{{
-      content:'';position:absolute;inset:0;
-      background:radial-gradient(ellipse at 60% 30%,rgba(181,164,138,.08) 0%,transparent 55%);
-      pointer-events:none
+    .hero-bg{{
+      position:absolute;inset:-60px 0;
+      background:url("Kantoor afbeelding.png") center 40% / cover no-repeat;
+      will-change:transform;z-index:0
     }}
+    .hero-overlay{{
+      position:absolute;inset:0;z-index:1;
+      background:linear-gradient(to bottom,rgba(8,8,14,.58) 0%,rgba(6,6,12,.80) 100%)
+    }}
+    .hero > *:not(.hero-bg):not(.hero-overlay){{position:relative;z-index:2}}
     .hero-eyebrow{{
       display:inline-flex;align-items:center;gap:7px;
       background:rgba(181,164,138,.18);border:1px solid rgba(181,164,138,.3);
@@ -333,6 +335,8 @@ def build_dashboard(listings: list[dict]) -> str:
 
 <!-- Hero -->
 <div class="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-overlay"></div>
   <div class="hero-eyebrow">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     Vastgoedmonitor
@@ -748,6 +752,14 @@ def build_dashboard(listings: list[dict]) -> str:
     cards.forEach(c=>grid.appendChild(c));
     updateStats();
   }});
+
+  // ── Parallax hero ──
+  const heroBg = document.getElementById('hero-bg');
+  if (heroBg) {{
+    window.addEventListener('scroll', () => {{
+      heroBg.style.transform = `translateY(${{window.scrollY * 0.35}}px)`;
+    }}, {{passive: true}});
+  }}
 
   // Init
   updateSlider();
