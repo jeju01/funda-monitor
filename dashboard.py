@@ -123,8 +123,8 @@ def build_dashboard(listings: list[dict]) -> str:
       position:relative;overflow:hidden;background:#08080e
     }}
     .hero-bg{{
-      position:absolute;inset:-60px 0;
-      background:url("Kantoor afbeelding.png") center 40% / cover no-repeat;
+      position:absolute;inset:-40px 0;
+      background:url("Kantoor afbeelding.png") center 30% / 100% auto no-repeat;
       will-change:transform;z-index:0
     }}
     .hero-overlay{{
