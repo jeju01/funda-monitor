@@ -218,7 +218,7 @@ def build_dashboard(listings: list[dict]) -> str:
   <h1>Vastgoedmonitor</h1>
   <p>Lammers Beton &nbsp;·&nbsp; Bijgewerkt op {today}</p>
 </header>
-<div class="accent-bar">Nederland &amp; België &nbsp;·&nbsp; Funda + Immoweb</div>
+<div class="accent-bar">Nederland &amp; België &nbsp;·&nbsp; Funda · Immoweb</div>
 
 <div class="filters">
 

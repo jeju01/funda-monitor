@@ -8,13 +8,7 @@ MIN_PRICE = 0
 CENTER_ADDRESS = "Trancheeweg 18, 6002 ST Weert, NL"
 DEFAULT_RADIUS_KM = 75  # standaard straal in km
 
-REGIONS = [
-    "noord-brabant",
-    "limburg",
-    "zuid-holland",
-    "utrecht",
-    "gelderland",
-]
+REGIONS = ["nederland"]
 
 # Ondersteunde stralen door pyfunda: 1, 2, 5, 10, 15, 30, 50 km
 # Voor grotere stralen fetchen we per regio en filteren we zelf op afstand
