@@ -15,8 +15,8 @@
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/appartement-hoola-van-nootenstraat-278/44488721/",
     "region": "utrecht",
     "search_type": "koop",
-    "lat": null,
-    "lon": null
+    "lat": 52.0870931,
+    "lon": 5.1058011
   },
   "43332541": {
     "id": "43332541",
@@ -34,8 +34,8 @@
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/huis-nieuwegracht-67/43332541/",
     "region": "utrecht",
     "search_type": "koop",
-    "lat": null,
-    "lon": null
+    "lat": 52.0875747,
+    "lon": 5.1252066
   },
   "43774096": {
     "id": "43774096",
@@ -53,7 +53,7 @@
     "funda_url": "https://www.funda.nl/detail/koop/utrecht/appartement-nieuwegracht-19-g/43774096/",
     "region": "utrecht",
     "search_type": "koop",
-    "lat": null,
-    "lon": null
+    "lat": 52.0892434,
+    "lon": 5.1238301
   }
 }
