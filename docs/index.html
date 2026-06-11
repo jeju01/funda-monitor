@@ -11694,6 +11694,7 @@
     document.getElementById('tab-algemeen').classList.add('active');
     document.getElementById('tab-gebied').classList.remove('active');
     applyFilters();
+    updateStats(); // expliciet aanroepen zodat teller zeker klopt
   }
 
   function clearPolygonFilter() {
@@ -11961,12 +11962,15 @@
     searchEl.value=''; srcEl.value=''; cntryEl.value=''; sortEl.value='default';
     sMin.value=SLIDER_MIN_VAL; sMax.value=SLIDER_MAX_VAL;
     inputMin.value=SLIDER_MIN_VAL; inputMax.value=SLIDER_MAX_VAL;
-    radToggle.checked=false; radSection.classList.remove('open');
-    centerLat=null; centerLon=null; radStatus.textContent='';
-    updateSlider();
-    cards.forEach(c=>{ c.classList.remove('hidden'); const d=c.querySelector('.card-distance'); if(d) d.textContent=''; });
+    centerLat=null; centerLon=null;
+    inPolygonIds=null;
+    cards.forEach(c=>{
+      c.classList.remove('hidden');
+      c.removeAttribute('data-in-polygon');
+      const d=c.querySelector('.card-distance'); if(d) d.textContent='';
+    });
     cards.forEach(c=>grid.appendChild(c));
-    updateStats();
+    updateSlider();
   });
 
   // ── Parallax hero ──
