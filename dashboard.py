@@ -453,20 +453,64 @@ def build_dashboard(listings: list[dict]) -> str:
   let centerLat = null, centerLon = null;
   let activeTab = 'algemeen';
 
-  // ── Kaart (initialiseer alleen als Leaflet beschikbaar is) ──
+  // ── Kaart ──
   const GEO_LISTINGS = {listings_json};
-  let map = null, drawnLayer = null, activePolygon = null;
-  let polygonFilter = null; // null = geen filter, anders array van [lat,lon] punten
+  let map = null, drawnLayer = null, currentDrawHandler = null;
+  let inPolygonIds = null; // null = geen filter, anders Set van listing IDs
+
+  // Ray casting point-in-polygon (lon=x, lat=y voor correcte geografische oriëntatie)
+  function pointInPolygon(lat, lon, poly) {{
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {{
+      const xi = poly[i].lng, yi = poly[i].lat;
+      const xj = poly[j].lng, yj = poly[j].lat;
+      if (((yi > lat) !== (yj > lat)) && (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi))
+        inside = !inside;
+    }}
+    return inside;
+  }}
+
+  function onPolygonCreated(latlngs) {{
+    // Bouw lookup lat/lon per listing ID
+    const geoById = {{}};
+    GEO_LISTINGS.forEach(l => {{ if (l.lat && l.lon) geoById[l.id] = {{lat: l.lat, lon: l.lon}}; }});
+
+    inPolygonIds = new Set();
+    GEO_LISTINGS.forEach(l => {{
+      if (!l.lat || !l.lon) return;
+      if (pointInPolygon(l.lat, l.lon, latlngs)) inPolygonIds.add(String(l.id));
+    }});
+
+    const count = inPolygonIds.size;
+    document.getElementById('map-result-count').textContent = count;
+    document.getElementById('map-result-pill').classList.add('visible');
+    document.getElementById('btn-draw-clear').classList.add('visible');
+    document.getElementById('map-hint').textContent =
+      count > 0
+        ? `${{count}} pand${{count === 1 ? '' : 'en'}} gevonden — zie Algemeen tabblad.`
+        : 'Geen panden in dit gebied. Teken een groter gebied.';
+
+    // Schakel terug naar Algemeen en pas filter toe
+    switchTab('algemeen');
+  }}
+
+  function clearPolygonFilter() {{
+    inPolygonIds = null;
+    if (drawnLayer) drawnLayer.clearLayers();
+    document.getElementById('map-result-pill').classList.remove('visible');
+    document.getElementById('btn-draw-clear').classList.remove('visible');
+    document.getElementById('map-hint').textContent = 'Teken een gebied op de kaart om panden te filteren.';
+    applyFilters();
+  }}
 
   function initMap() {{
     if (map) return;
     map = L.map('map').setView([51.5, 5.0], 7);
     L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-      attribution: '© OpenStreetMap',
-      maxZoom: 18
+      attribution: '© OpenStreetMap', maxZoom: 18
     }}).addTo(map);
 
-    // Markers
+    // Markers per listing
     const srcColors = {{ Funda: '#ff6b00', Immoweb: '#003da5' }};
     GEO_LISTINGS.forEach(l => {{
       if (!l.lat || !l.lon) return;
@@ -474,94 +518,46 @@ def build_dashboard(listings: list[dict]) -> str:
       const icon = L.divIcon({{
         className: '',
         html: `<div style="width:10px;height:10px;border-radius:50%;background:${{color}};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
-        iconSize: [10, 10], iconAnchor: [5, 5]
+        iconSize: [10,10], iconAnchor: [5,5]
       }});
-      const marker = L.marker([l.lat, l.lon], {{icon}}).addTo(map);
-      marker.bindPopup(`
-        <div class="map-popup">
+      L.marker([l.lat, l.lon], {{icon}}).addTo(map)
+        .bindPopup(`<div class="map-popup">
           <strong>${{l.address}}</strong>
           <div class="mp-city">${{l.city}} · ${{l.country}}</div>
           <div class="mp-price">${{l.price_fmt || 'Prijs onbekend'}}</div>
           <a href="${{l.url}}" target="_blank">Bekijk op ${{l.source}} →</a>
-        </div>`, {{maxWidth: 220}});
-      marker._listingId = l.id;
+        </div>`, {{maxWidth:220}});
     }});
 
-    // Teken-laag
+    // Laag voor getekende vormen
     drawnLayer = new L.FeatureGroup().addTo(map);
-    const drawCtrl = new L.Control.Draw({{
-      draw: {{
-        polygon: {{ shapeOptions: {{ color: '#b5a48a', fillOpacity: 0.15, weight: 2 }} }},
-        polyline: false, rectangle: false, circle: false,
-        circlemarker: false, marker: false
-      }},
-      edit: {{ featureGroup: drawnLayer }}
-    }});
-    map.addControl(drawCtrl);
 
+    // Event: tekenen voltooid → verwerk polygon
     map.on(L.Draw.Event.CREATED, e => {{
       drawnLayer.clearLayers();
       drawnLayer.addLayer(e.layer);
-      activePolygon = e.layer.getLatLngs()[0];
-      polygonFilter = activePolygon.map(p => [p.lat, p.lng]);
-      applyPolygonFilter();
+      // Cursor terug naar normaal
+      if (currentDrawHandler) {{ currentDrawHandler.disable(); currentDrawHandler = null; }}
+      map.getContainer().style.cursor = '';
+      // Verwerk de polygon
+      const latlngs = e.layer.getLatLngs()[0]; // eerste ring
+      onPolygonCreated(latlngs);
     }});
-    map.on(L.Draw.Event.DELETED, () => {{ clearPolygonFilter(); }});
 
-    // Knop "Teken gebied" activeert de Leaflet draw mode
+    // Knop: start tekenmodus
     document.getElementById('btn-draw').addEventListener('click', () => {{
-      const drawHandler = new L.Draw.Polygon(map, {{
-        shapeOptions: {{ color: '#b5a48a', fillOpacity: 0.15, weight: 2 }}
+      if (currentDrawHandler) {{ currentDrawHandler.disable(); }}
+      currentDrawHandler = new L.Draw.Polygon(map, {{
+        shapeOptions: {{ color: '#b5a48a', fillOpacity: 0.15, weight: 2 }},
+        allowIntersection: false,
+        showArea: false
       }});
-      drawHandler.enable();
+      currentDrawHandler.enable();
+      document.getElementById('map-hint').textContent = 'Klik om punten te plaatsen · dubbelklik om de vorm te sluiten.';
     }});
 
-    document.getElementById('btn-draw-clear').addEventListener('click', () => {{
-      drawnLayer.clearLayers();
-      clearPolygonFilter();
-    }});
-  }}
-
-  function pointInPolygon(point, polygon) {{
-    const [px, py] = point;
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {{
-      const [xi, yi] = polygon[i], [xj, yj] = polygon[j];
-      if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi))
-        inside = !inside;
-    }}
-    return inside;
-  }}
-
-  function applyPolygonFilter() {{
-    if (!polygonFilter) return;
-    const geoById = {{}};
-    GEO_LISTINGS.forEach(l => {{ if (l.lat && l.lon) geoById[l.id] = [l.lat, l.lon]; }});
-    let count = 0;
-    cards.forEach(card => {{
-      const coords = geoById[card.dataset.id];
-      if (coords && pointInPolygon(coords, polygonFilter)) {{
-        card.classList.remove('polygon-hidden');
-        count++;
-      }} else {{
-        card.classList.add('polygon-hidden');
-      }}
-    }});
-    document.getElementById('map-result-count').textContent = count;
-    document.getElementById('map-result-pill').classList.add('visible');
-    document.getElementById('btn-draw-clear').classList.add('visible');
-    document.getElementById('map-hint').textContent = 'Gebied geselecteerd — bekijk resultaten in het tabblad Algemeen.';
-    switchTab('algemeen');
-    applyFilters();
-  }}
-
-  function clearPolygonFilter() {{
-    polygonFilter = null;
-    cards.forEach(c => c.classList.remove('polygon-hidden'));
-    document.getElementById('map-result-pill').classList.remove('visible');
-    document.getElementById('btn-draw-clear').classList.remove('visible');
-    document.getElementById('map-hint').textContent = 'Teken een gebied op de kaart om panden te filteren.';
-    applyFilters();
+    // Knop: wis gebied
+    document.getElementById('btn-draw-clear').addEventListener('click', clearPolygonFilter);
   }}
 
   // ── Tab wisselen ──
@@ -692,7 +688,7 @@ def build_dashboard(listings: list[dict]) -> str:
       const mSearch  = !q || addr.includes(q) || city.includes(q);
       const mSrc     = !src   || csrc   === src;
       const mCntry   = !cntry || ccntry === cntry;
-      const mPolygon = !polygonFilter || !card.classList.contains('polygon-hidden');
+      const mPolygon = !inPolygonIds || inPolygonIds.has(String(card.dataset.id));
 
       let mDist = true;
       let distKm = null;
@@ -704,6 +700,7 @@ def build_dashboard(listings: list[dict]) -> str:
       }}
 
       card.classList.toggle('hidden', !(mPrice && mSearch && mSrc && mCntry && mDist && mPolygon));
+
 
       const dEl = card.querySelector('.card-distance');
       if (dEl) dEl.textContent = distKm !== null ? distKm.toFixed(1)+' km van middelpunt' : '';
